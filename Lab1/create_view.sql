@@ -8,4 +8,5 @@ CREATE VIEW ReaderBorrow AS
     FROM Reader, Book, Borrow
     WHERE 
         book_ID = Book.ID
-        AND reader_ID = Reader.ID;
+        AND reader_ID = Reader.ID
+        AND DATEDIFF(CURDATE(), borrow_Date) <= 365;
