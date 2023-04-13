@@ -12,6 +12,9 @@ CREATE PROCEDURE borrowBook(IN readerID CHAR(8), IN bookID CHAR(8), OUT result V
     THEN SET result = 'The book has been borrowed.';
     
     ELSEIF 
+        (SELECT reserve_Times FROM Book 
+        WHERE ID = bookID) <> 0
+        AND
         readerID NOT IN 
         (SELECT reader_ID FROM Reserve
         WHERE book_ID = bookID AND reader_ID = readerID)
