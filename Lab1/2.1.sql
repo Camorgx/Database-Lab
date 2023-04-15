@@ -1,7 +1,7 @@
 SELECT 
     Book.ID AS '图书号',
     Book.name AS '书名',
-    DATEDIFF(return_Date, borrow_Date) AS '借期'
+    borrow_Date AS '借期'
 FROM Book, Reader, Borrow
 WHERE 
     Book.ID = book_ID
