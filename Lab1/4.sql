@@ -1,10 +1,14 @@
 DROP PROCEDURE IF EXISTS borrowBook;
 DELIMITER //
 CREATE PROCEDURE borrowBook(IN readerID CHAR(8), IN bookID CHAR(8), OUT result VARCHAR(50)) BEGIN
+    DECLARE s INT DEFAULT 0;
+    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION SET s = 1;
+    START TRANSACTION;
+    
     IF 
         readerID IN
         (SELECT readerID FROM Borrow
-        WHERE book_ID = book_ID AND borrow_Date = CURDATE())
+        WHERE book_ID = bookID AND borrow_Date = CURDATE())
     THEN SET result = 'You have borrowed it today.';
     
     ELSEIF 
@@ -38,6 +42,10 @@ CREATE PROCEDURE borrowBook(IN readerID CHAR(8), IN bookID CHAR(8), OUT result V
             borrow_Times = borrow_Times + 1,
             status = 1
         WHERE ID = bookID;
+    END IF;
+    
+    IF s = 0 THEN COMMIT;
+    ELSE ROLLBACK;
     END IF;
 END //
 DELIMITER ;

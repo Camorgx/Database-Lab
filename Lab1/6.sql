@@ -3,10 +3,11 @@ DELIMITER //
 DROP TRIGGER IF EXISTS onReserveInsert //
 CREATE TRIGGER onReserveInsert AFTER INSERT 
 ON Reserve FOR EACH ROW BEGIN
+    UPDATE Book
+    SET status = 2
+    WHERE ID = new.book_ID AND status <> 1;
     UPDATE Book 
-    SET 
-        status = 2,
-        reserve_Times = reserve_Times + 1
+    SET reserve_Times = reserve_Times + 1
     WHERE ID = new.book_ID;
 END //
 

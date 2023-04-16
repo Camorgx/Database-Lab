@@ -1,6 +1,10 @@
 DROP PROCEDURE IF EXISTS returnBook;
 DELIMITER //
 CREATE PROCEDURE returnBook(IN readerID CHAR(8), IN bookID CHAR(8), OUT result VARCHAR(50)) BEGIN
+    DECLARE s INT DEFAULT 0;
+    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION SET s = 1;
+    START TRANSACTION;
+    
     IF 
         readerID NOT IN 
         (SELECT reader_ID From Borrow 
@@ -26,6 +30,10 @@ CREATE PROCEDURE returnBook(IN readerID CHAR(8), IN bookID CHAR(8), OUT result V
         
         UPDATE Book SET status = newStatus WHERE ID = bookID;
     END;
+    END IF;
+
+    IF s = 0 THEN COMMIT;
+    ELSE ROLLBACK;
     END IF;
 END //
 DELIMITER ;
