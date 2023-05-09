@@ -12,7 +12,7 @@ CREATE PROCEDURE updateReaderID(IN originID CHAR(8), IN newID CHAR(8),
     UPDATE Reserve SET reader_ID = newID WHERE reader_ID = originID;
     SET FOREIGN_KEY_CHECKS = 1;
     IF s = 0 THEN
-        SET status = 'OK';
+        SET status = 'OK.';
         COMMIT;
     ELSE 
         SET status = 'Failed.';
