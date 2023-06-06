@@ -4,19 +4,21 @@
 /*==============================================================*/
 
 
+drop table if exists Teach;
+
+drop table if exists TeacherAccount;
+
 drop table if exists Lesson;
+
+drop table if exists Publish;
+
+drop table if exists Undertake;
 
 drop table if exists Paper;
 
 drop table if exists Project;
 
-drop table if exists Publish;
-
-drop table if exists Teach;
-
 drop table if exists Teacher;
-
-drop table if exists Undertake;
 
 /*==============================================================*/
 /* Table: Lesson                                                */
@@ -125,4 +127,14 @@ alter table Undertake add constraint FK_Undertake foreign key (teacherID)
 
 alter table Undertake add constraint FK_Undertake2 foreign key (projectID)
       references Project (projectID) on delete restrict on update restrict;
+
+create table TeacherAccount
+(
+    teacherID            char(5) primary key,
+    password             varchar(20) not null,
+    verification         varchar(20) not null
+);
+
+alter table TeacherAccount add constraint FK_TeacherAccount foreign key (teacherID)
+      references Teacher (teacherID) on delete restrict on update restrict;
 
