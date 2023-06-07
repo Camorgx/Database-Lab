@@ -1,0 +1,1 @@
+insert into Teacher value ()
