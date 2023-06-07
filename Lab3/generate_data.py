@@ -4,14 +4,17 @@ project = []
 undertake = []
 lesson = []
 teach = []
+publish = []
 
 for i in range(1, 21):
     projectID = '%05d' % i
     projectName = f'Project{i}'
     projectCandidate = random.randint(1, 5)
     totalMoney = 0
+    teacherList = [k for k in range(1, 21)]
+    random.shuffle(teacherList)
     for j in range(1, projectCandidate + 1):
-        teacher = random.randint(1, 20)
+        teacher = teacherList[j - 1]
         rank = j
         money = random.randint(1, 10)
         undertake.append("('%05d', '%s', %d, %d)" % (teacher, projectID, rank, money))
@@ -24,8 +27,9 @@ for i in range(1, 21):
     lessonName = f'Lesson{i}'
     lessonCandidate = random.randint(1, 5)
     totalHour = 0
+    random.shuffle(teacherList)
     for j in range(1, lessonCandidate + 1):
-        teacher = random.randint(1, 20)
+        teacher = teacherList[j - 1]
         term = j
         year = random.randint(2010, 2020)
         hour = random.randint(1, 10)
@@ -33,9 +37,16 @@ for i in range(1, 21):
         totalHour += hour
     lesson.append("('%s', '%s', %d, %d)" % (lessonID, lessonName, totalHour, random.randint(1, 4)))
 
+    paperID = i
+    paperCandidate = random.randint(1, 5)
+    correspondingID = random.randint(1, paperCandidate)
+    random.shuffle(teacherList)
+    for j in range(1, paperCandidate + 1):
+        teacher = teacherList[j - 1]
+        publish.append("('%05d', %d, %d, %s)" % (teacher, paperID, j, j == correspondingID))
 
 
-with open('tmp.txt', 'w') as file:
+with open('insert_data.sql', 'w') as file:
     for i in range(1, 21):
         file.write("insert into Teacher value ('%05d', 'Teacher%d', %d, %d);\n"
                    % (i, i, random.randint(1, 2), random.randint(1, 11)))
@@ -47,6 +58,9 @@ with open('tmp.txt', 'w') as file:
         file.write("insert into Paper value (%d, 'Paper%d', 'PaperSource%d', %d, %d, %d);\n"
                    % (i, i, i, random.randint(2010, 2020), random.randint(1, 4), random.randint(1, 6)))
     file.write('\n')
+    for item in publish:
+        file.write(f"insert into Publish value {item};\n")
+    file.write('\n')
     for item in lesson:
         file.write(f"insert into Lesson value {item};\n")
     file.write('\n')
@@ -54,7 +68,7 @@ with open('tmp.txt', 'w') as file:
         file.write(f"insert into Teach value {item};\n")
     file.write('\n')
     for item in project:
-        file.write(f"insert into Lesson value {item};\n")
+        file.write(f"insert into Project value {item};\n")
     file.write('\n')
     for item in undertake:
         file.write(f"insert into Undertake value {item};\n")

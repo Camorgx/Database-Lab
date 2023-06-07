@@ -12,17 +12,16 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Lab3 {
+namespace Lab3
+{
     /// <summary>
-    /// Operation.xaml 的交互逻辑
+    /// PleaseWaiting.xaml 的交互逻辑
     /// </summary>
-    public partial class Operation : Window {
-        public Operation() {
+    public partial class PleaseWaiting : Window
+    {
+        public PleaseWaiting()
+        {
             InitializeComponent();
-        }
-
-        private void WindowClosed(object sender, EventArgs e) {
-            Owner.Close();
         }
     }
 }

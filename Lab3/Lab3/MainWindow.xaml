@@ -31,11 +31,14 @@
             <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" TextWrapping="Wrap" Foreground="#707070"><Run Text="现在开始使用教师教学科研登记系统。"/></TextBlock>
             <StackPanel Margin="0,15" Orientation="Horizontal">
                 <materialDesign:PackIcon Kind="Account" VerticalAlignment="Center" Foreground="#707070"/>
-                <TextBox x:Name="teacherID" materialDesign:HintAssist.Hint="工号" Width="250" Margin="5"/>
+                <TextBox x:Name="teacherID" materialDesign:HintAssist.Hint="工号" Width="250" Margin="5"
+                         materialDesign:TextFieldAssist.HasClearButton="True"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <materialDesign:PackIcon Kind="Key" VerticalAlignment="Center" Foreground="#707070"/>
-                <PasswordBox x:Name="password" materialDesign:HintAssist.Hint="密码" Width="250" Margin="5"/>
+                <PasswordBox x:Name="password" materialDesign:HintAssist.Hint="密码" Width="250" Margin="5"
+                             Style="{StaticResource MaterialDesignRevealPasswordBox}"
+                             materialDesign:TextFieldAssist.HasClearButton="True"/>
             </StackPanel>
             <Grid>
                 <CheckBox x:Name="rememberMe" Content="记住我" Margin="5,10" Foreground="#707070"/>
@@ -53,5 +56,7 @@
             <TextBlock Text="欢迎回来" Foreground="White" HorizontalAlignment="Center" FontSize="48" FontFamily="Champagne &amp; Limousines" FontWeight="Bold"/>
             <TextBlock x:Name="apothegm" Foreground="White" HorizontalAlignment="Center" Width="280" FontSize="24" FontFamily="Champagne &amp; Limousines" TextWrapping="Wrap" TextAlignment="Center" Margin="0,50,0,0"/>
         </StackPanel>
+        <materialDesign:DialogHost Identifier="RootDialog" HorizontalAlignment="Center" VerticalAlignment="Center">
+        </materialDesign:DialogHost>
     </Grid>
 </Window>

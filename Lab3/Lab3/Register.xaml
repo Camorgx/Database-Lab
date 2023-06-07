@@ -28,6 +28,7 @@
                          MaxLength="5"
                          Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                          materialDesign:TextFieldAssist.CharacterCounterVisibility="Visible"
+                         materialDesign:TextFieldAssist.HasClearButton="True"
                          materialDesign:HintAssist.HelperText="长度为 5 个字符"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
@@ -36,7 +37,7 @@
                              materialDesign:HintAssist.HelperText="不超过 20 个字符，包含字母和数字。"
                              materialDesign:HintAssist.Hint="密码"
                              MaxLength="20"
-                             Style="{StaticResource MaterialDesignFloatingHintPasswordBox}"
+                             Style="{StaticResource MaterialDesignFloatingHintRevealPasswordBox}"
                              materialDesign:TextFieldAssist.CharacterCounterVisibility="Visible"
                              materialDesign:TextFieldAssist.HasClearButton="True" Width="250" Margin="5"/>
             </StackPanel>
@@ -46,7 +47,7 @@
                              materialDesign:HintAssist.HelperText="请保证两次输入的密码一致"
                              materialDesign:HintAssist.Hint="确认密码"
                              MaxLength="20"
-                             Style="{StaticResource MaterialDesignFloatingHintPasswordBox}"
+                             Style="{StaticResource MaterialDesignFloatingHintRevealPasswordBox}"
                              materialDesign:TextFieldAssist.CharacterCounterVisibility="Visible"
                              materialDesign:TextFieldAssist.HasClearButton="True" Width="250" Margin="5"/>
             </StackPanel>
