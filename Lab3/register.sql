@@ -13,7 +13,7 @@ begin
     set result = 0;
     if ID in (select teacherID from teacheraccount) then set result = 1;
     else
-        insert into Teacher value(ID, null, null, null);
+        insert into Teacher value (ID, null, null, null);
         insert into TeacherAccount value (ID, pwd, verify);
     end if;
     if s = 0 then commit;
