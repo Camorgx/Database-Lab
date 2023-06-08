@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:local="clr-namespace:Lab3"
         mc:Ignorable="d"
         Title="教师教学科研登记系统" Height="800" Width="1150" WindowStartupLocation="CenterOwner"
         Closed="WindowClosed" Loaded="WindowLoaded" WindowStyle="None" MouseLeftButtonDown="MoveWindowMouseLeftButtonDown">
@@ -120,6 +121,9 @@
                     <Button VerticalAlignment="Center" HorizontalAlignment="Center" Content="修改密码" 
                             FontFamily="Segoe UI Black" FontSize="12" Width="120" Height="40" Click="ResetPasswordButtonClick"
                             Grid.Row="6" Grid.Column="1" Background="#FF307CD6" BorderBrush="#FF307CD6"/>
+                    <Button VerticalAlignment="Center" HorizontalAlignment="Center" Content="退出登录" 
+                            FontFamily="Segoe UI Black" FontSize="12" Width="120" Height="40" Click="LogoutButtonClick"
+                            Grid.Row="7" Grid.Column="1" Background="#FF307CD6" BorderBrush="#FF307CD6"/>
                 </Grid>
             </TabItem>
             <TabItem Height="80">
@@ -140,6 +144,7 @@
                                 <ColumnDefinition Width="50"></ColumnDefinition>
                                 <ColumnDefinition Width="120"></ColumnDefinition>
                                 <ColumnDefinition Width="50"></ColumnDefinition>
+                                <ColumnDefinition Width="100"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
                             <Button VerticalAlignment="Center" HorizontalAlignment="Center" Content="删除选中的论文" 
                                     FontFamily="Segoe UI Black" FontSize="18" Width="180" Height="50" Click="RemovePaper"
@@ -150,6 +155,9 @@
                             <Button VerticalAlignment="Center" HorizontalAlignment="Center" Content="申报论文" 
                                     FontFamily="Segoe UI Black" FontSize="18" Width="120" Height="50" 
                                     Grid.Column="5" Background="#FF307CD6" BorderBrush="#FF307CD6"/>
+                            <Button VerticalAlignment="Center" HorizontalAlignment="Center" Content="刷新" 
+                                    FontFamily="Segoe UI Black" FontSize="18" Width="100" Height="50" Click="RefreshPaperButtonClick"
+                                    Grid.Column="7" Background="#FF307CD6" BorderBrush="#FF307CD6"/>
                         </Grid>
                         <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
                             <Grid.ColumnDefinitions>
@@ -163,14 +171,24 @@
                                 <RowDefinition Height="80"></RowDefinition>
                                 <RowDefinition Height="auto"></RowDefinition>
                             </Grid.RowDefinitions>
-                            <Label Content="我发表的论文" FontFamily="Segoe UI Black" FontSize="24" Margin="0,10" 
-                               VerticalAlignment="Top" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="0"/>
+                            <Grid.Resources>
+                                <local:Paper x:Key="paperView"/>
+                            </Grid.Resources>
+                            <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0"
+                                        VerticalAlignment="Top" HorizontalAlignment="Left">
+                                <Label Content="我发表的论文" FontFamily="Segoe UI Black" FontSize="24"/>
+                                <Label Content="（您只能操作您发表的论文）" FontFamily="Segoe UI Black" FontSize="18"
+                                       Margin="0, 7" Foreground="Gray"/>
+                            </StackPanel>
                             <DataGrid CanUserAddRows="False" x:Name="ownPaper" IsReadOnly="True"
-                                  SelectionMode="Extended" SelectionUnit="FullRow" Grid.Column="0" Grid.Row="1"/>
+                                      AutoGenerateColumns="True"
+                                      SelectionMode="Single" SelectionUnit="FullRow" Grid.Column="0" Grid.Row="1">
+                            </DataGrid>
                             <Label Content="我参与的论文" FontFamily="Segoe UI Black" FontSize="24" Margin="0,10" 
                                VerticalAlignment="Top" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="3"/>
                             <DataGrid CanUserAddRows="False" x:Name="partedPaper" IsReadOnly="True"
-                                  SelectionMode="Extended" SelectionUnit="FullRow" Grid.Column="0" Grid.Row="4"/>
+                                      AutoGenerateColumns="True" IsHitTestVisible="False"
+                                      SelectionMode="Single" SelectionUnit="FullRow" Grid.Column="0" Grid.Row="4"/>
                         </Grid>
                     </StackPanel>
                 </ScrollViewer>

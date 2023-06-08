@@ -107,6 +107,7 @@ namespace Lab3 {
         }
 
         public static async Task<bool> LoadPaperData(string teacherID) {
+            Global.userPaper.Clear();
             using var command = paperWriter.CreateCommand();
             command.CommandText = $"select paper.paperID as paperID, paperName as name, paperSource as source, " +
                                   $"    paperYear as year, paperType as type, level, paperRank, corresponding " +
@@ -130,6 +131,7 @@ namespace Lab3 {
         }
 
         public static async Task<bool> LoadProjectData(string teacherID) {
+            Global.userProject.Clear();
             using var command = projectWriter.CreateCommand();
             command.CommandText = $"select project.projectID as projectID, projectName as name, projectSource as source, " +
                                   $"    projectType as type, totalMoney, startYear, endYear, projectRank, money " +
@@ -154,6 +156,7 @@ namespace Lab3 {
         }
 
         public static async Task<bool> LoadLessonData(string teacherID) {
+            Global.userLesson.Clear();
             using var command = lessonWriter.CreateCommand();
             command.CommandText = $"select lesson.lessonID as lessonID, lessonName as name, lessonHour as totalHour, " +
                                   $"    lessonType as type, year, term, hour " +
@@ -221,6 +224,24 @@ namespace Lab3 {
             command.Parameters.AddRange(new MySqlParameter[] { idParam, oldPwdParam, newPwdParam, statusParam });
             await command.ExecuteNonQueryAsync();
             return (int)(statusParam.Value ?? 2);
+        }
+
+        public static async Task<int> RemovePaper(int id) {
+            using var command = connection.CreateCommand();
+            command.CommandText = "deletePaper";
+            command.CommandType = CommandType.StoredProcedure;
+            var idParam = new MySqlParameter {
+                Value = id,
+                ParameterName = "ID",
+                Direction = ParameterDirection.Input,
+            };
+            var statusParam = new MySqlParameter {
+                ParameterName = "result",
+                Direction = ParameterDirection.Output,
+            };
+            command.Parameters.AddRange(new MySqlParameter[] { idParam, statusParam });
+            await command.ExecuteNonQueryAsync();
+            return (int)(statusParam.Value ?? 1);
         }
     }
 }

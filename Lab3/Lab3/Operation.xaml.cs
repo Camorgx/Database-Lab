@@ -1,7 +1,8 @@
-﻿using System;
+﻿using MaterialDesignThemes.Wpf;
+using System;
 using System.Windows;
 using System.Windows.Input;
-using MaterialDesignThemes.Wpf;
+using System.Threading.Tasks;
 
 namespace Lab3 {
     /// <summary>
@@ -16,6 +17,16 @@ namespace Lab3 {
 
         private void WindowClosed(object sender, EventArgs e) {
             if (!logOut) Owner.Close();
+            else if (Owner is MainWindow window) {
+                window.rememberMe.IsChecked = false;
+                window.password.Password = "";
+            }
+        }
+
+        private void LogoutButtonClick(object sender, RoutedEventArgs e) {
+            logOut = true;
+            Owner.Show();
+            Close();
         }
 
         private void CloseWindowClick(object sender, RoutedEventArgs e) {
@@ -49,9 +60,9 @@ namespace Lab3 {
         }
 
         private void InitPaper() {
+            Utils.UpdatePaperView();
             ownPaper.ItemsSource = Global.ownPaper;
             partedPaper.ItemsSource = Global.partedPaper;
-            Utils.UpdatePaperView();
         }
 
         private void WindowLoaded(object sender, RoutedEventArgs e) {
@@ -109,27 +120,51 @@ namespace Lab3 {
             if (res == 0) {
                 await Utils.MessageTips("密码更改成功，请重新登录系统。", "OperationDialog");
                 logOut = true;
-                ((MainWindow)Owner).rememberMe.IsChecked = false;
-                ((MainWindow)Owner).password.Password = "";
                 Owner.Show();
                 Close();
             }
-            else if (res == 1) {
-                await Utils.MessageTips("旧密码不正确。", "OperationDialog");
-                return;
-            }
-            else if (res == 2) {
-                await Utils.MessageTips("数据库错误。", "OperationDialog");
-                return;
-            }
-            else {
-                await Utils.MessageTips("未知错误。", "OperationDialog");
-                return;
-            }
+            else if (res == 1) await Utils.MessageTips("旧密码不正确。", "OperationDialog");
+            else if (res == 2) await Utils.MessageTips("数据库错误。", "OperationDialog");
+            else await Utils.MessageTips("未知错误。", "OperationDialog");
         }
 
         private async void RemovePaper(object sender, RoutedEventArgs e) {
+            if (ownPaper.SelectedItem is not Paper paper) return;
+            if (!await Utils.VerificationDialog($"将删除论文序号: {paper.序号}，不可恢复，是否确定？", 
+                "OperationDialog")) return;
+            var window = new PleaseWait() {
+                WindowStartupLocation = WindowStartupLocation.Manual,
+                Left = Left + Width / 2.5,
+                Top = Top + Height / 2.5,
+            };
+            window.Show();
+            var id = paper.序号;
+            int res = await Database.RemovePaper(id);
+            await RefreshPaper();
+            window.Close();
+            if (res == 0) await Utils.MessageTips("所选论文已删除。", "OperationDialog");
+            else if (res == 1) await Utils.MessageTips("数据库错误。", "OperationDialog"); 
+            else await Utils.MessageTips("未知错误。", "OperationDialog");
+        }
 
+        private async Task<bool> RefreshPaper() {
+            await Database.LoadPaperData(Global.teacher.ID);
+            Utils.UpdatePaperView();
+            ownPaper.Items.Refresh();
+            partedPaper.Items.Refresh();
+            return true;
+        }
+
+        private async void RefreshPaperButtonClick(object sender, RoutedEventArgs e) {
+            var refresh = RefreshPaper();
+            var window = new PleaseWait() {
+                WindowStartupLocation = WindowStartupLocation.Manual,
+                Left = Left + Width / 2.5,
+                Top = Top + Height / 2.5,
+            };
+            window.Show();
+            await refresh;
+            window.Close();
         }
     }
 }
