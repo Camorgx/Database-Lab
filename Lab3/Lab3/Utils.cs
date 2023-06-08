@@ -14,7 +14,7 @@ namespace Lab3 {
         public static bool VerifyPassword(string password) {
             if (password.Length < 8 || password.Length > 20) return false;
             bool findAlpha = false, findNumber = false;
-            foreach (char ch in  password) {
+            foreach (char ch in password) {
                 if (char.IsDigit(ch)) findNumber = true;
                 if (char.IsLetter(ch)) findAlpha = true;
             }

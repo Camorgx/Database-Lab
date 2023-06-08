@@ -6,7 +6,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         Title="教师教学科研登记系统" Height="400" Width="650" WindowStartupLocation="CenterOwner"
-        Closed="WindowClosed">
+        Closed="WindowClosed" Loaded="WindowLoaded">
     <Grid>
         <TabControl VerticalContentAlignment="Top"
                         materialDesign:ColorZoneAssist.Mode="PrimaryMid"
@@ -33,8 +33,8 @@
                     <StackPanel Width="auto" Height="auto" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="0">
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="Account" VerticalAlignment="Center" Foreground="#707070"/>
-                            <TextBox materialDesign:HintAssist.Hint="工号" Width="350" Margin="5"
-                                     MaxLength="5" IsEnabled="False"
+                            <TextBox x:Name="teacherID" materialDesign:HintAssist.Hint="工号" 
+                                     Width="350" Margin="5" MaxLength="5" IsEnabled="False" 
                                      Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                                      materialDesign:TextFieldAssist.CharacterCounterVisibility="Hidden"/>
                         </StackPanel>
@@ -42,7 +42,7 @@
                     <StackPanel Width="auto" Height="auto" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="1">
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="Account" VerticalAlignment="Center" Foreground="#707070"/>
-                            <TextBox materialDesign:HintAssist.Hint="姓名" Width="350" Margin="5"
+                            <TextBox x:Name="name" materialDesign:HintAssist.Hint="姓名" Width="350" Margin="5"
                                      Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                                      materialDesign:TextFieldAssist.CharacterCounterVisibility="Hidden"/>
                         </StackPanel>
@@ -50,7 +50,7 @@
                     <StackPanel Width="auto" Height="auto" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="2">
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="GenderEnby" VerticalAlignment="Center" Foreground="#707070"/>
-                            <ComboBox Width="350"
+                            <ComboBox x:Name="gender" Width="350"
                                       materialDesign:HintAssist.Hint="性别"
                                       Style="{StaticResource MaterialDesignFloatingHintComboBox}">
                                 <ComboBoxItem Content="男" />
@@ -61,7 +61,7 @@
                     <StackPanel Width="auto" Height="auto" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="3">
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="GenderEnby" VerticalAlignment="Center" Foreground="#707070"/>
-                            <ComboBox Width="350"
+                            <ComboBox x:Name="teacherTitle" Width="350"
                                       materialDesign:HintAssist.Hint="职称"
                                       Style="{StaticResource MaterialDesignFloatingHintComboBox}">
                                 <ComboBoxItem Content="博士后" />

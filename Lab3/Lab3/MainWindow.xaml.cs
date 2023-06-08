@@ -86,8 +86,8 @@ namespace Lab3 {
             };
             window.Show();
             bool status = await res;
-            window.Close();
             if (status) {
+                var loadData = Database.LoadUserData(id);
                 Configuration configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
                 bool save = rememberMe.IsChecked.GetValueOrDefault();
                 configuration.AppSettings.Settings["IsPasswordSaved"].Value = save ? "True" : "False";
@@ -97,11 +97,14 @@ namespace Lab3 {
                 }
                 configuration.Save();
                 ConfigurationManager.RefreshSection("appSettings");
+                await loadData;
+                window.Close();
                 var operation = new Operation() { Owner = this };
                 operation.Show();
                 Hide();
             }
             else {
+                window.Close();
                 await Utils.MessageTips("工号或密码不正确。", "MainWindowDialog");
             }
         }
