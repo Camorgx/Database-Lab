@@ -166,5 +166,22 @@ namespace Lab3 {
             await refresh;
             window.Close();
         }
+
+        private async void ModifyButtonClick(object sender, RoutedEventArgs e) {
+            if (ownPaper.SelectedItem is not Paper paper) return;
+            var window = new PleaseWait() {
+                WindowStartupLocation = WindowStartupLocation.Manual,
+                Left = Left + Width / 2.5,
+                Top = Top + Height / 2.5,
+            };
+            window.Show();
+            var record = Database.SearchPaper(paper.序号);
+            var showPaper = new ShowPaper {
+                Message = { Content = "修改论文信息" },
+                view = {Record = await record}
+            };
+            window.Close();
+            var res = await DialogHost.Show(showPaper, "OperationDialog") ?? "false";
+        }
     }
 }

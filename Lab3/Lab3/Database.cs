@@ -257,17 +257,16 @@ namespace Lab3 {
                     name = reader.GetString("name"),
                     source = reader.GetString("source"),
                     year = reader.GetInt32("year"),
-                    type = ItemTranslation.PaperType[reader.GetInt32("type")],
-                    level = ItemTranslation.PaperLevel[reader.GetInt32("level")]
+                    type = reader.GetInt32("type"),
+                    level = reader.GetInt32("level")
                 };
             }
-            command.CommandText = $"select teacherName as name, corresponding as cor " +
+            command.CommandText = $"select publish.teacherID as teacherID, teacherName as name, corresponding as cor " +
                                   $"    from publish, teacher " +
                                   $"where paperID = 1 and publish.teacherID = teacher.teacherID";
             using (var reader = await command.ExecuteReaderAsync()) {
                 while (await reader.ReadAsync()) {
-                    res.authors.Add((reader.GetString("name"), 
-                        ItemTranslation.Corresponding[reader.GetInt32("cor")]));
+                    res.authors.Add((reader.GetString("teacherID"), reader.GetString("name"), reader.GetInt32("cor")));
                 }
             }
             return res;
