@@ -41,6 +41,16 @@ namespace Lab3 {
         public int Title { get; set; } = 1;
     }
 
+    class PaperRecord {
+        public int id = 0;
+        public string name = "";
+        public string source = "";
+        public int year = 2010;
+        public string type = "";
+        public string level = "";
+        public List<(string name, string cor)> authors = new();
+    }
+
     static class Global {
         public static Teacher teacher = new();
         public static List<Paper> userPaper = new();
