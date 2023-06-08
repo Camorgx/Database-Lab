@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="注册" Height="370" Width="600" ResizeMode="NoResize" WindowStyle="None"
         AllowsTransparency="True" Background="Transparent" WindowStartupLocation="CenterScreen"
-        MouseLeftButtonDown="MoveWindow_MouseLeftButtonDown">
+        MouseLeftButtonDown="MoveWindowMouseLeftButtonDown">
     <Grid>
         <Rectangle RadiusY="8" RadiusX="8" Fill="White"/>
         <Rectangle Margin="310,0,0,0" RadiusX="8" RadiusY="8">
@@ -25,7 +25,7 @@
             <StackPanel Margin="0,10" Orientation="Horizontal">
                 <materialDesign:PackIcon Kind="Account" VerticalAlignment="Bottom" Foreground="#707070"/>
                 <TextBox materialDesign:HintAssist.Hint="工号" Width="250" Margin="5"
-                         MaxLength="5"
+                         MaxLength="5" x:Name="teacherID"
                          Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                          materialDesign:TextFieldAssist.CharacterCounterVisibility="Visible"
                          materialDesign:TextFieldAssist.HasClearButton="True"
@@ -33,8 +33,8 @@
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <materialDesign:PackIcon Kind="Key" VerticalAlignment="Bottom" Foreground="#707070"/>
-                <PasswordBox x:Name="PasswordBox" 
-                             materialDesign:HintAssist.HelperText="不超过 20 个字符，包含字母和数字。"
+                <PasswordBox x:Name="passwordBox" 
+                             materialDesign:HintAssist.HelperText="8 ~ 20 个字符，包含字母和数字。"
                              materialDesign:HintAssist.Hint="密码"
                              MaxLength="20"
                              Style="{StaticResource MaterialDesignFloatingHintRevealPasswordBox}"
@@ -43,7 +43,7 @@
             </StackPanel>
             <StackPanel Margin="0,10" Orientation="Horizontal">
                 <materialDesign:PackIcon Kind="Key" VerticalAlignment="Bottom" Foreground="#707070"/>
-                <PasswordBox x:Name="VerifyPassword" 
+                <PasswordBox x:Name="verifyPassword" 
                              materialDesign:HintAssist.HelperText="请保证两次输入的密码一致"
                              materialDesign:HintAssist.Hint="确认密码"
                              MaxLength="20"
@@ -53,19 +53,19 @@
             </StackPanel>
             <StackPanel Margin="0,0" Orientation="Horizontal">
                 <materialDesign:PackIcon Kind="Verified" VerticalAlignment="Bottom" Foreground="#707070"/>
-                <TextBox x:Name="Verification" 
-                             materialDesign:HintAssist.Hint="身份校验码"
-                             materialDesign:HintAssist.HelperText="不超过 20 个字符，用于重置密码。"
-                             MaxLength="20"
-                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                             materialDesign:TextFieldAssist.CharacterCounterVisibility="Visible"
-                             materialDesign:TextFieldAssist.HasClearButton="True" Width="250" Margin="5"/>
+                <TextBox x:Name="verification" 
+                         materialDesign:HintAssist.Hint="身份校验码"
+                         materialDesign:HintAssist.HelperText="不超过 20 个字符，用于重置密码。"
+                         MaxLength="20"
+                         Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                         materialDesign:TextFieldAssist.CharacterCounterVisibility="Visible"
+                         materialDesign:TextFieldAssist.HasClearButton="True" Width="250" Margin="5"/>
             </StackPanel>
             <Button Margin="0,25" Content="注册" FontFamily="Impact" FontSize="18" Width="100" 
-                    Background="#FF307CD6" BorderBrush="#FF307CD6"/>
+                    Background="#FF307CD6" BorderBrush="#FF307CD6" Click="RegisterButtonClick"/>
         </StackPanel>
         <Button BorderBrush="{x:Null}" Background="{x:Null}" HorizontalAlignment="Right" VerticalAlignment="Top"
-                Click="CloseWindow_Click">
+                Click="CloseWindowClick">
             <materialDesign:PackIcon Kind="Close"/>
         </Button>
         <StackPanel Margin="310,100,0,50">
@@ -74,5 +74,7 @@
             <TextBlock Margin="0, 20" Text="教师教学科研登记系统" HorizontalAlignment="Center" 
                        Foreground="White" FontSize="22" FontFamily="Champagne &amp; Limousines"/>
         </StackPanel>
+        <materialDesign:DialogHost Identifier="RegisterDialog" HorizontalAlignment="Center" VerticalAlignment="Center">
+        </materialDesign:DialogHost>
     </Grid>
 </Window>

@@ -3,13 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Lab3"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         
         Title="登录" Height="300" Width="600" ResizeMode="NoResize" WindowStyle="None"
         AllowsTransparency="True" Background="Transparent" WindowStartupLocation="CenterScreen"
-        MouseLeftButtonDown="MoveWindow_MouseLeftButtonDown" Loaded="Window_Loaded">
+        MouseLeftButtonDown="MoveWindowMouseLeftButtonDown" Loaded="WindowLoaded">
     <Grid>
         <Rectangle RadiusY="8" RadiusX="8" Fill="White"/>
         <Rectangle Margin="310,0,0,0" RadiusX="8" RadiusY="8">
@@ -49,14 +48,14 @@
                     Click="LoginButtonClick"/>
         </StackPanel>
         <Button BorderBrush="{x:Null}" Background="{x:Null}" HorizontalAlignment="Right" VerticalAlignment="Top"
-                Click="CloseWindow_Click">
+                Click="CloseWindowClick">
             <materialDesign:PackIcon Kind="Close"/>
         </Button>
         <StackPanel Margin="310,50,0,50">
             <TextBlock Text="欢迎回来" Foreground="White" HorizontalAlignment="Center" FontSize="48" FontFamily="Champagne &amp; Limousines" FontWeight="Bold"/>
             <TextBlock x:Name="apothegm" Foreground="White" HorizontalAlignment="Center" Width="280" FontSize="24" FontFamily="Champagne &amp; Limousines" TextWrapping="Wrap" TextAlignment="Center" Margin="0,50,0,0"/>
         </StackPanel>
-        <materialDesign:DialogHost Identifier="RootDialog" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <materialDesign:DialogHost Identifier="MainWindowDialog" HorizontalAlignment="Center" VerticalAlignment="Center">
         </materialDesign:DialogHost>
     </Grid>
 </Window>

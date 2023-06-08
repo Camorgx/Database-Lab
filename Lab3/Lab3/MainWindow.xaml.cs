@@ -16,11 +16,11 @@ namespace Lab3 {
             InitializeComponent();
         }
 
-        private void CloseWindow_Click(object sender, RoutedEventArgs e) {
+        private void CloseWindowClick(object sender, RoutedEventArgs e) {
             Close();
         }
 
-        private void MoveWindow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
+        private void MoveWindowMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
             DragMove();
         }
 
@@ -36,7 +36,7 @@ namespace Lab3 {
             return res;
         }
 
-        private async void Window_Loaded(object sender, RoutedEventArgs e) {
+        private async void WindowLoaded(object sender, RoutedEventArgs e) {
             var text = GetYiYanWords();
             var openDatabase = Database.Activate();
             string isPasswordSaved = ConfigurationManager.AppSettings["IsPasswordSaved"] ?? "False";
@@ -69,6 +69,7 @@ namespace Lab3 {
                 Left = Left,
                 Top = Top,
             };
+            resetPasswordWindow.teacherID.Text = teacherID.Text;
             resetPasswordWindow.Activate();
             resetPasswordWindow.Show();
             Hide();
@@ -78,7 +79,7 @@ namespace Lab3 {
             var id = teacherID.Text;
             var pwd = password.Password;
             var res = Database.TryLogin(id, pwd);
-            var window = new PleaseWaiting() {
+            var window = new PleaseWait() {
                 WindowStartupLocation = WindowStartupLocation.Manual,
                 Left = Left + Width / 2.5,
                 Top = Top + Height / 2.5,
@@ -101,7 +102,7 @@ namespace Lab3 {
                 Hide();
             }
             else {
-                Utils.MessageTips("工号或密码不正确！");
+                await Utils.MessageTips("工号或密码不正确。", "MainWindowDialog");
             }
         }
     }
