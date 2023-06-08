@@ -44,7 +44,7 @@ namespace Lab3 {
             int res = await Database.TryResetPassword(id, pwd, verify);
             window.Close();
             if (res == 0) {
-                await Utils.MessageTips("密码重置成功，请登陆系统。", "ResetPasswordDialog");
+                await Utils.MessageTips("密码重置成功，请登录系统。", "ResetPasswordDialog");
                 CloseWindowClick(sender, e);
             }
             else if (res == 1) {

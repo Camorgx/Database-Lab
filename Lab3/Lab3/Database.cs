@@ -10,10 +10,10 @@ namespace Lab3 {
             Password = "2004",
             Database = "lab3"
         }.ConnectionString;
-        private static MySqlConnection connection = new(connectString);
-        private static MySqlConnection paperWriter = new(connectString);
-        private static MySqlConnection projectWriter = new(connectString);
-        private static MySqlConnection lessonWriter = new(connectString);
+        private static readonly MySqlConnection connection = new(connectString);
+        private static readonly MySqlConnection paperWriter = new(connectString);
+        private static readonly MySqlConnection projectWriter = new(connectString);
+        private static readonly MySqlConnection lessonWriter = new(connectString);
 
         public static async Task<bool> Activate() {
             var conOpener = connection.OpenAsync();
@@ -66,9 +66,9 @@ namespace Lab3 {
         }
 
         public static async Task<int> TryResetPassword(string id, string password, string verification) {
-            using var regCommand = connection.CreateCommand();
-            regCommand.CommandText = "resetPassword";
-            regCommand.CommandType = CommandType.StoredProcedure;
+            using var command = connection.CreateCommand();
+            command.CommandText = "resetPassword";
+            command.CommandType = CommandType.StoredProcedure;
             var idParam = new MySqlParameter {
                 Value = id,
                 ParameterName = "ID",
@@ -88,8 +88,8 @@ namespace Lab3 {
                 ParameterName = "result",
                 Direction = ParameterDirection.Output,
             };
-            regCommand.Parameters.AddRange(new MySqlParameter[] { idParam, pwdParam, verParam, statusParam });
-            await regCommand.ExecuteNonQueryAsync();
+            command.Parameters.AddRange(new MySqlParameter[] { idParam, pwdParam, verParam, statusParam });
+            await command.ExecuteNonQueryAsync();
             return (int)(statusParam.Value ?? 3);
         }
 
@@ -116,14 +116,14 @@ namespace Lab3 {
             Global.teacher.ID = teacherID;
             while (await reader.ReadAsync()) {
                 Global.userPaper.Add(new Paper {
-                    ID = reader.GetInt32("paperID"),
-                    Name = reader.GetString("name"),
-                    Source = reader.GetString("source"),
-                    Year = reader.GetInt32("year"),
-                    Type = reader.GetInt32("type"),
-                    Level = reader.GetInt32("level"),
-                    Rank = reader.GetInt32("paperRank"),
-                    Corresponding = reader.GetInt32("corresponding")
+                    序号 = reader.GetInt32("paperID"),
+                    论文名称 = reader.GetString("name"),
+                    发表源 = reader.GetString("source"),
+                    发表年份 = reader.GetInt32("year"),
+                    类型 = ItemTranslation.PaperType[reader.GetInt32("type")],
+                    级别 = ItemTranslation.PaperLevel[reader.GetInt32("level")],
+                    排名 = reader.GetInt32("paperRank"),
+                    是否通讯作者 = ItemTranslation.Corresponding[reader.GetInt32("corresponding")]
                 });
             }
             return true;
@@ -142,7 +142,7 @@ namespace Lab3 {
                     ID = reader.GetString("projectID"),
                     Name = reader.GetString("name"),
                     Source = reader.GetString("source"),
-                    Type = reader.GetInt32("type"),
+                    Type = ItemTranslation.ProjectType[reader.GetInt32("type")],
                     TotalMoney = reader.GetFloat("totalMoney"),
                     StartYear = reader.GetInt32("startYear"),
                     EndYear = reader.GetInt32("endYear"),
@@ -166,7 +166,7 @@ namespace Lab3 {
                     ID = reader.GetString("lessonID"),
                     Name = reader.GetString("name"),
                     TotalHour = reader.GetInt32("totalHour"),
-                    Type = reader.GetInt32("type"),
+                    Type = ItemTranslation.LessonType[reader.GetInt32("type")],
                     Year = reader.GetInt32("year"),
                     Term = reader.GetInt32("term"),
                     Hour = reader.GetInt32("hour")
@@ -185,6 +185,42 @@ namespace Lab3 {
             await loadPaperData;
             await loadProjectData;
             return true;
+        }
+
+        public static async Task<bool> UpdateTeacherData(string id, string name, int gender, int title) {
+            using var command = connection.CreateCommand();
+            command.CommandText = $"update Teacher set teacherName = '{name}', gender = {gender}, title = {title} " +
+                                  $"where teacherID = '{id}'";
+            var res = await command.ExecuteNonQueryAsync();
+            return res != 0;
+        }
+
+        public static async Task<int> UpdatePassword(string id, string oldPwd, string newPwd) {
+            using var command = connection.CreateCommand();
+            command.CommandText = "updatePassword";
+            command.CommandType = CommandType.StoredProcedure;
+            var idParam = new MySqlParameter {
+                Value = id,
+                ParameterName = "ID",
+                Direction = ParameterDirection.Input,
+            };
+            var oldPwdParam = new MySqlParameter {
+                Value = oldPwd,
+                ParameterName = "oldPwd",
+                Direction = ParameterDirection.Input,
+            };
+            var newPwdParam = new MySqlParameter {
+                Value = newPwd,
+                ParameterName = "newPwd",
+                Direction = ParameterDirection.Input,
+            };
+            var statusParam = new MySqlParameter {
+                ParameterName = "result",
+                Direction = ParameterDirection.Output,
+            };
+            command.Parameters.AddRange(new MySqlParameter[] { idParam, oldPwdParam, newPwdParam, statusParam });
+            await command.ExecuteNonQueryAsync();
+            return (int)(statusParam.Value ?? 2);
         }
     }
 }

@@ -21,5 +21,15 @@ namespace Lab3 {
             if (!findNumber || !findAlpha) return false;
             return true;
         }
+
+        public static void UpdatePaperView() {
+            Global.ownPaper.Clear();
+            Global.partedPaper.Clear();
+            foreach (var paper in Global.userPaper) {
+                if (paper.排名 == 1)
+                    Global.ownPaper.Add(paper);
+                else Global.partedPaper.Add(paper);
+            }
+        }
     }
 }

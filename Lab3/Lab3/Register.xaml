@@ -61,7 +61,7 @@
                          materialDesign:TextFieldAssist.CharacterCounterVisibility="Visible"
                          materialDesign:TextFieldAssist.HasClearButton="True" Width="250" Margin="5"/>
             </StackPanel>
-            <Button Margin="0,25" Content="注册" FontFamily="Impact" FontSize="18" Width="100" 
+            <Button Margin="0,25" Content="注册" FontFamily="Segoe UI Black" FontSize="18" Width="100" 
                     Background="#FF307CD6" BorderBrush="#FF307CD6" Click="RegisterButtonClick"/>
         </StackPanel>
         <Button BorderBrush="{x:Null}" Background="{x:Null}" HorizontalAlignment="Right" VerticalAlignment="Top"

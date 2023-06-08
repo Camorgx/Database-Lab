@@ -36,15 +36,16 @@
             <StackPanel Orientation="Horizontal">
                 <materialDesign:PackIcon Kind="Key" VerticalAlignment="Center" Foreground="#707070"/>
                 <PasswordBox x:Name="password" materialDesign:HintAssist.Hint="密码" Width="250" Margin="5"
+                             x:FieldModifier="public"
                              Style="{StaticResource MaterialDesignRevealPasswordBox}"
                              materialDesign:TextFieldAssist.HasClearButton="True"/>
             </StackPanel>
             <Grid>
-                <CheckBox x:Name="rememberMe" Content="记住我" Margin="5,10" Foreground="#707070"/>
+                <CheckBox x:Name="rememberMe" Content="记住我" Margin="5,10" Foreground="#707070" x:FieldModifier="public"/>
                 <Label Content="忘记密码" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="217,0,0,0" Foreground="#707070"
                        MouseLeftButtonDown="ShowResetPasswordWindow" Cursor="Hand"/>
             </Grid>
-            <Button Content="登录" FontFamily="Impact" FontSize="18" Width="100" Background="#FF307CD6" BorderBrush="#FF307CD6"
+            <Button Content="登录" FontFamily="Segoe UI Black" FontSize="18" Width="100" Background="#FF307CD6" BorderBrush="#FF307CD6"
                     Click="LoginButtonClick"/>
         </StackPanel>
         <Button BorderBrush="{x:Null}" Background="{x:Null}" HorizontalAlignment="Right" VerticalAlignment="Top"

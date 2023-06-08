@@ -46,6 +46,11 @@
             "无级别",      // 6 
         };
 
+        public static readonly string[] Corresponding = {
+            "否",  // 0
+            "是",  // 1
+        };
+
         public static readonly string[] ProjectType = {
             "",
             "国家级项目",    // 1

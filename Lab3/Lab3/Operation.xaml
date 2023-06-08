@@ -5,17 +5,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="教师教学科研登记系统" Height="400" Width="650" WindowStartupLocation="CenterOwner"
-        Closed="WindowClosed" Loaded="WindowLoaded">
+        Title="教师教学科研登记系统" Height="800" Width="1150" WindowStartupLocation="CenterOwner"
+        Closed="WindowClosed" Loaded="WindowLoaded" WindowStyle="None" MouseLeftButtonDown="MoveWindowMouseLeftButtonDown">
     <Grid>
         <TabControl VerticalContentAlignment="Top"
-                        materialDesign:ColorZoneAssist.Mode="PrimaryMid"
-                        Style="{StaticResource MaterialDesignNavigationRailTabControl}">
-            <TabItem>
+                    materialDesign:ColorZoneAssist.Mode="PrimaryMid"
+                    Style="{StaticResource MaterialDesignNavigationRailTabControl}">
+            <TabItem Height="80">
                 <TabItem.Header>
                     <StackPanel Width="auto" Height="auto">
                         <materialDesign:PackIcon Width="24" Height="24" HorizontalAlignment="Center" Kind="AccountSchool" />
-                        <TextBlock HorizontalAlignment="Center" Text="个人" />
+                        <TextBlock HorizontalAlignment="Center" Text="个人信息" />
                     </StackPanel>
                 </TabItem.Header>
                 <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -26,6 +26,9 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="60"></RowDefinition>
                         <RowDefinition Height="60"></RowDefinition>
+                        <RowDefinition Height="60"></RowDefinition>
+                        <RowDefinition Height="60"></RowDefinition>
+                        <RowDefinition Height="10"></RowDefinition>
                         <RowDefinition Height="60"></RowDefinition>
                         <RowDefinition Height="60"></RowDefinition>
                         <RowDefinition Height="60"></RowDefinition>
@@ -78,39 +81,122 @@
                             </ComboBox>
                         </StackPanel>
                     </StackPanel>
-                    <Button VerticalAlignment="Top" HorizontalAlignment="Left" Content="更新个人信息" 
-                            FontFamily="Impact" FontSize="12" Width="120" Height="40"
+                    <Button VerticalAlignment="Top" HorizontalAlignment="Center" Content="更新个人信息" 
+                            FontFamily="Segoe UI Black" FontSize="12" Width="120" Height="40" Click="UpdateButtonClick"
                             Grid.Row="2" Grid.Column="1" Background="#FF307CD6" BorderBrush="#FF307CD6"/>
+                    <StackPanel Width="auto" Height="auto" Grid.Column="0" Grid.Row="5"
+                                HorizontalAlignment="Left" VerticalAlignment="Center">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Key" VerticalAlignment="Center" Foreground="#707070"/>
+                            <PasswordBox x:Name="oldPassword" Width="350" MaxLength="20"
+                             materialDesign:HintAssist.Hint="旧密码"
+                             Style="{StaticResource MaterialDesignRevealPasswordBox}"
+                             materialDesign:TextFieldAssist.CharacterCounterVisibility="Visible"
+                             materialDesign:TextFieldAssist.HasClearButton="True" Margin="5"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Width="auto" Height="auto" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="6">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Key" VerticalAlignment="Bottom" Foreground="#707070"/>
+                            <PasswordBox x:Name="newPassword" Width="350" MaxLength="20"
+                             materialDesign:HintAssist.HelperText="不超过 20 个字符，包含字母和数字。"
+                             materialDesign:HintAssist.Hint="新密码"
+                             Style="{StaticResource MaterialDesignFloatingHintRevealPasswordBox}"
+                             materialDesign:TextFieldAssist.CharacterCounterVisibility="Visible"
+                             materialDesign:TextFieldAssist.HasClearButton="True" Margin="5"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Width="auto" Height="auto" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="7">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Key" VerticalAlignment="Bottom" Foreground="#707070"/>
+                            <PasswordBox x:Name="verifyPassword" Width="350" MaxLength="20"
+                             materialDesign:HintAssist.HelperText="请保持两次输入的密码一致。"
+                             materialDesign:HintAssist.Hint="确认密码"
+                             Style="{StaticResource MaterialDesignFloatingHintRevealPasswordBox}"
+                             materialDesign:TextFieldAssist.CharacterCounterVisibility="Visible"
+                             materialDesign:TextFieldAssist.HasClearButton="True" Margin="5"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <Button VerticalAlignment="Center" HorizontalAlignment="Center" Content="修改密码" 
+                            FontFamily="Segoe UI Black" FontSize="12" Width="120" Height="40" Click="ResetPasswordButtonClick"
+                            Grid.Row="6" Grid.Column="1" Background="#FF307CD6" BorderBrush="#FF307CD6"/>
                 </Grid>
             </TabItem>
-            <TabItem>
+            <TabItem Height="80">
                 <TabItem.Header>
                     <StackPanel Width="auto" Height="auto">
                         <materialDesign:PackIcon Width="24" Height="24" HorizontalAlignment="Center" Kind="Paper" />
-                        <TextBlock HorizontalAlignment="Center" Text="论文" />
+                        <TextBlock HorizontalAlignment="Center" Text="我的论文" />
                     </StackPanel>
                 </TabItem.Header>
-                <Grid HorizontalAlignment="Center" VerticalAlignment="Top">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="400"></ColumnDefinition>
-                        <ColumnDefinition Width="150"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-                    <DataGrid Grid.Row="0" CanUserAddRows="False" SelectionMode="Extended" SelectionUnit="Cell" />
-                </Grid>
+                <ScrollViewer VerticalScrollBarVisibility="Auto" VerticalAlignment="Top">
+                    <StackPanel>
+                        <Grid HorizontalAlignment="Left" Margin="0, 50" VerticalAlignment="Center" Height="50">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="70"></ColumnDefinition>
+                                <ColumnDefinition Width="180"></ColumnDefinition>
+                                <ColumnDefinition Width="50"></ColumnDefinition>
+                                <ColumnDefinition Width="180"></ColumnDefinition>
+                                <ColumnDefinition Width="50"></ColumnDefinition>
+                                <ColumnDefinition Width="120"></ColumnDefinition>
+                                <ColumnDefinition Width="50"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Button VerticalAlignment="Center" HorizontalAlignment="Center" Content="删除选中的论文" 
+                                    FontFamily="Segoe UI Black" FontSize="18" Width="180" Height="50" 
+                                    Grid.Column="1" Background="#FF307CD6" BorderBrush="#FF307CD6"/>
+                            <Button VerticalAlignment="Center" HorizontalAlignment="Center" Content="修改选中的论文" 
+                                    FontFamily="Segoe UI Black" FontSize="18" Width="180" Height="50" 
+                                    Grid.Column="3" Background="#FF307CD6" BorderBrush="#FF307CD6"/>
+                            <Button VerticalAlignment="Center" HorizontalAlignment="Center" Content="申报论文" 
+                                    FontFamily="Segoe UI Black" FontSize="18" Width="120" Height="50" 
+                                    Grid.Column="5" Background="#FF307CD6" BorderBrush="#FF307CD6"/>
+                        </Grid>
+                        <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="800"></ColumnDefinition>
+                                <ColumnDefinition Width="150"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="80"></RowDefinition>
+                                <RowDefinition Height="auto"></RowDefinition>
+                                <RowDefinition Height="50"></RowDefinition>
+                                <RowDefinition Height="80"></RowDefinition>
+                                <RowDefinition Height="auto"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Label Content="我发表的论文" FontFamily="Segoe UI Black" FontSize="24" Margin="0,10" 
+                               VerticalAlignment="Top" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="0"/>
+                            <DataGrid CanUserAddRows="False" x:Name="ownPaper" IsReadOnly="True"
+                                  SelectionMode="Extended" SelectionUnit="FullRow" Grid.Column="0" Grid.Row="1"/>
+                            <Label Content="我参与的论文" FontFamily="Segoe UI Black" FontSize="24" Margin="0,10" 
+                               VerticalAlignment="Top" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="3"/>
+                            <DataGrid CanUserAddRows="False" x:Name="partedPaper" IsReadOnly="True"
+                                  SelectionMode="Extended" SelectionUnit="FullRow" Grid.Column="0" Grid.Row="4"/>
+                        </Grid>
+                    </StackPanel>
+                </ScrollViewer>
             </TabItem>
-            <TabItem>
+            <TabItem Height="80">
                 <TabItem.Header>
                     <StackPanel Width="auto" Height="auto">
                         <materialDesign:PackIcon Width="24" Height="24" HorizontalAlignment="Center" Kind="ProjectorScreen" />
-                        <TextBlock HorizontalAlignment="Center" Text="项目" />
+                        <TextBlock HorizontalAlignment="Center" Text="我的项目" />
                     </StackPanel>
                 </TabItem.Header>
             </TabItem>
-            <TabItem>
+            <TabItem Height="80">
                 <TabItem.Header>
                     <StackPanel Width="auto" Height="auto">
                         <materialDesign:PackIcon Width="24" Height="24" HorizontalAlignment="Center" Kind="Class" />
-                        <TextBlock HorizontalAlignment="Center" Text="课程" />
+                        <TextBlock HorizontalAlignment="Center" Text="我的课程" />
+                    </StackPanel>
+                </TabItem.Header>
+            </TabItem>
+            <TabItem IsEnabled="False" Height="300"></TabItem>
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Width="auto" Height="auto">
+                        <materialDesign:PackIcon Width="24" Height="24" HorizontalAlignment="Center" Kind="FileFind" />
+                        <TextBlock HorizontalAlignment="Center" Text="查询" />
                     </StackPanel>
                 </TabItem.Header>
             </TabItem>
@@ -123,5 +209,21 @@
                 </TabItem.Header>
             </TabItem>
         </TabControl>
+        <materialDesign:DialogHost Identifier="OperationDialog" HorizontalAlignment="Center" VerticalAlignment="Center">
+        </materialDesign:DialogHost>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
+            <Button BorderBrush="{x:Null}" Background="Blue" HorizontalAlignment="Right" VerticalAlignment="Top"
+                Click="MinimizeWindowClick">
+                <materialDesign:PackIcon Kind="Minimize"/>
+            </Button>
+            <Button BorderBrush="{x:Null}" Background="Blue" HorizontalAlignment="Right" VerticalAlignment="Top"
+                Click="MaximizeWindowClick">
+                <materialDesign:PackIcon x:Name="maxIcon" Kind="Maximize"/>
+            </Button>
+            <Button BorderBrush="{x:Null}" Background="Blue" HorizontalAlignment="Right" VerticalAlignment="Top"
+                Click="CloseWindowClick">
+                <materialDesign:PackIcon Kind="Close"/>
+            </Button>
+        </StackPanel>
     </Grid>
 </Window>

@@ -1,10 +1,8 @@
-﻿using MaterialDesignThemes.Wpf;
-using System;
+﻿using System;
 using System.Configuration;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace Lab3 {
