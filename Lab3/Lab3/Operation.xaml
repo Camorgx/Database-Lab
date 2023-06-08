@@ -142,7 +142,7 @@
                                 <ColumnDefinition Width="50"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
                             <Button VerticalAlignment="Center" HorizontalAlignment="Center" Content="删除选中的论文" 
-                                    FontFamily="Segoe UI Black" FontSize="18" Width="180" Height="50" 
+                                    FontFamily="Segoe UI Black" FontSize="18" Width="180" Height="50" Click="RemovePaper"
                                     Grid.Column="1" Background="#FF307CD6" BorderBrush="#FF307CD6"/>
                             <Button VerticalAlignment="Center" HorizontalAlignment="Center" Content="修改选中的论文" 
                                     FontFamily="Segoe UI Black" FontSize="18" Width="180" Height="50" 

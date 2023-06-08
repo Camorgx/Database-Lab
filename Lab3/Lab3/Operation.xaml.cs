@@ -127,5 +127,9 @@ namespace Lab3 {
                 return;
             }
         }
+
+        private async void RemovePaper(object sender, RoutedEventArgs e) {
+
+        }
     }
 }

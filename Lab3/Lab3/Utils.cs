@@ -11,6 +11,14 @@ namespace Lab3 {
             return true;
         }
 
+        public static async Task<bool> VerificationDialog(string message, string identifier) {
+            var verDialog = new VerifyDialog {
+                Message = { Text = message }
+            };
+            var res = await DialogHost.Show(verDialog, identifier) ?? "false";
+            return bool.Parse((string)res);
+        }
+
         public static bool VerifyPassword(string password) {
             if (password.Length < 8 || password.Length > 20) return false;
             bool findAlpha = false, findNumber = false;
