@@ -13,17 +13,21 @@ namespace Lab3 {
 
         public class Pair {
             public string 作者工号 { get; set; } = "";
-            public string 作者姓名 { get; set; } = "";
-            public string 是否为通讯作者 { get; set; } = "";
+            public YesOrNo 是否为通讯作者 { get; set; } = YesOrNo.否;
         }
 
         public PaperRecord Record { get; set; } = new();
 
         public List<Pair> Authors { get; set; } = new();
 
+        public enum YesOrNo : byte {
+            是 = 1,
+            否 = 0
+        }
+
         private void UserControlLoaded(object sender, System.Windows.RoutedEventArgs e) {
-            foreach (var (id, name, cor) in Record.authors)
-                Authors.Add(new Pair { 作者工号 = id, 作者姓名 = name, 是否为通讯作者 = ItemTranslation.Corresponding[cor] });
+            foreach (var (id, _, cor) in Record.authors)
+                Authors.Add(new Pair { 作者工号 = id, 是否为通讯作者 = (YesOrNo)cor });
             authors.ItemsSource = Authors;
             paperID.Text = Record.id.ToString();
             paperName.Text = Record.name;

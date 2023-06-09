@@ -6,8 +6,8 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:local="clr-namespace:Lab3"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="500" Loaded="UserControlLoaded">
-    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top">
+             d:DesignHeight="450" d:DesignWidth="600" Loaded="UserControlLoaded">
+    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" MinWidth="500">
         <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
             <Grid.RowDefinitions>
                 <RowDefinition Height="50"/>
@@ -84,8 +84,9 @@
                 </StackPanel>
             </StackPanel>
         </Grid>
-        <ScrollViewer HorizontalAlignment="Center" VerticalAlignment="Center" VerticalScrollBarVisibility="Auto">
-            <DataGrid CanUserAddRows="True" x:Name="authors" IsReadOnly="False"
+        <ScrollViewer HorizontalAlignment="Center" VerticalAlignment="Center" materialDesign:ScrollBarAssist.ButtonsVisibility="Visible"
+                      VerticalScrollBarVisibility="Auto" MaxHeight="300" MinWidth="400">
+            <DataGrid CanUserAddRows="True" x:Name="authors" IsReadOnly="False" MinColumnWidth="200"
                       AutoGenerateColumns="True" x:FieldModifier="public" MinHeight="300" MinWidth="400"
                       SelectionMode="Single" SelectionUnit="Cell">
             </DataGrid>
