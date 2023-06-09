@@ -70,11 +70,11 @@ namespace Lab3 {
             InitPaper();
         }
 
+        private static readonly string dialogIdentifier = "OperationDialog";
+
         private async void UpdateButtonClick(object sender, RoutedEventArgs e) {
             var window = new PleaseWait() {
-                WindowStartupLocation = WindowStartupLocation.Manual,
-                Left = Left + Width / 2.5,
-                Top = Top + Height / 2.5,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
             };
             window.Show();
             var newName = name.Text;
@@ -87,16 +87,14 @@ namespace Lab3 {
                 Global.teacher.Name = newName;
                 Global.teacher.Gender = newGender;
                 Global.teacher.Title = newTitle;
-                await Utils.MessageTips("修改成功。", "OperationDialog");
+                await Utils.MessageTips("修改成功。", dialogIdentifier);
             }
-            else await Utils.MessageTips("修改失败。", "OperationDialog");
+            else await Utils.MessageTips("修改失败。", dialogIdentifier);
         }
 
         private async void ResetPasswordButtonClick(object sender, RoutedEventArgs e) {
             var window = new PleaseWait() {
-                WindowStartupLocation = WindowStartupLocation.Manual,
-                Left = Left + Width / 2.5,
-                Top = Top + Height / 2.5,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
             };
             window.Show();
             var id = Global.teacher.ID;
@@ -104,47 +102,45 @@ namespace Lab3 {
             var newPwd = newPassword.Password;
             var verPwd = verifyPassword.Password;
             if (newPwd != verPwd) {
-                await Utils.MessageTips("两次输入的密码不一致。", "OperationDialog");
+                await Utils.MessageTips("两次输入的密码不一致。", dialogIdentifier);
                 return;
             }
             if (oldPwd == newPwd) {
-                await Utils.MessageTips("旧密码与新密码相同。", "OperationDialog");
+                await Utils.MessageTips("旧密码与新密码相同。", dialogIdentifier);
                 return;
             }
             if (!Utils.VerifyPassword(newPwd)) {
-                await Utils.MessageTips("密码格式不正确。", "OperationDialog");
+                await Utils.MessageTips("密码格式不正确。", dialogIdentifier);
                 return;
             }
             int res = await Database.UpdatePassword(id, oldPwd, newPwd);
             window.Close();
             if (res == 0) {
-                await Utils.MessageTips("密码更改成功，请重新登录系统。", "OperationDialog");
+                await Utils.MessageTips("密码更改成功，请重新登录系统。", dialogIdentifier);
                 logOut = true;
                 Owner.Show();
                 Close();
             }
-            else if (res == 1) await Utils.MessageTips("旧密码不正确。", "OperationDialog");
-            else if (res == 2) await Utils.MessageTips("数据库错误。", "OperationDialog");
-            else await Utils.MessageTips("未知错误。", "OperationDialog");
+            else if (res == 1) await Utils.MessageTips("旧密码不正确。", dialogIdentifier);
+            else if (res == 2) await Utils.MessageTips("数据库错误。", dialogIdentifier);
+            else await Utils.MessageTips("未知错误。", dialogIdentifier);
         }
 
         private async void RemovePaper(object sender, RoutedEventArgs e) {
             if (ownPaper.SelectedItem is not Paper paper) return;
             if (!await Utils.VerificationDialog($"将删除论文序号: {paper.序号}，不可恢复，是否确定？", 
-                "OperationDialog")) return;
+                dialogIdentifier)) return;
             var window = new PleaseWait() {
-                WindowStartupLocation = WindowStartupLocation.Manual,
-                Left = Left + Width / 2.5,
-                Top = Top + Height / 2.5,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
             };
             window.Show();
             var id = paper.序号;
             int res = await Database.RemovePaper(id);
             await RefreshPaper();
             window.Close();
-            if (res == 0) await Utils.MessageTips("所选论文已删除。", "OperationDialog");
-            else if (res == 1) await Utils.MessageTips("数据库错误。", "OperationDialog"); 
-            else await Utils.MessageTips("未知错误。", "OperationDialog");
+            if (res == 0) await Utils.MessageTips("所选论文已删除。", dialogIdentifier);
+            else if (res == 1) await Utils.MessageTips("数据库错误。", dialogIdentifier); 
+            else await Utils.MessageTips("未知错误。", dialogIdentifier);
         }
 
         private async Task<bool> RefreshPaper() {
@@ -158,9 +154,7 @@ namespace Lab3 {
         private async void RefreshPaperButtonClick(object sender, RoutedEventArgs e) {
             var refresh = RefreshPaper();
             var window = new PleaseWait() {
-                WindowStartupLocation = WindowStartupLocation.Manual,
-                Left = Left + Width / 2.5,
-                Top = Top + Height / 2.5,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
             };
             window.Show();
             await refresh;
@@ -170,7 +164,7 @@ namespace Lab3 {
         public bool verifyToModifyPaper = false;
         public bool paperCreateWindowOpen = false;
 
-        private async void ModifyButtonClick(object sender, RoutedEventArgs e) {
+        private async void ModifyPaperButtonClick(object sender, RoutedEventArgs e) {
             verifyToModifyPaper = false;
             if (ownPaper.SelectedItem is not Paper paper) return;
             var window = new PleaseWait() {
@@ -187,9 +181,7 @@ namespace Lab3 {
                     Record = currentRecord,
                     paperID = { IsEnabled = false },
                 },
-                WindowStartupLocation = WindowStartupLocation.Manual,
-                Left = Left + Width / 4,
-                Top = Top + Height / 4,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Owner = this
             };
             showPaper.Show();
@@ -199,6 +191,7 @@ namespace Lab3 {
             });
             if (!verifyToModifyPaper) {
                 window.Close();
+                Activate();
                 return;
             }
             verifyToModifyPaper = true;
@@ -210,8 +203,28 @@ namespace Lab3 {
                 (authoreCmp ? Database.PaperUpdateMode.AttrOnly : Database.PaperUpdateMode.All);
             string res = await Database.UpdatePaper(Global.newPaper, mode, false);
             window.Close();
-            if (res == "ok") await Utils.MessageTips("论文信息更新完成。", "OperationDialog");
-            else await Utils.MessageTips($"工号{res}不存在。", "OperationDialog");
+            Activate();
+            if (res == "ok") await Utils.MessageTips("论文信息更新完成。", dialogIdentifier);
+            else await Utils.MessageTips($"工号{res}不存在。", dialogIdentifier);
+            RefreshPaperButtonClick(sender, e);
+        }
+
+        private async void NewPaperButtonClick(object sender, RoutedEventArgs e) {
+            var showPaper = new ShowPaper {
+                Message = { Content = "申报论文信息" },
+                CheckPaperID = true,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Owner = this
+            };
+            verifyToModifyPaper = false;
+            showPaper.Show();
+            await Task.Run(() => {
+                while (paperCreateWindowOpen) ;
+            }); 
+            Activate();
+            if (!verifyToModifyPaper) return;
+            string res = await Database.AddPaper(Global.newPaper, false);
+            await Utils.MessageTips(res, dialogIdentifier);
             RefreshPaperButtonClick(sender, e);
         }
     }

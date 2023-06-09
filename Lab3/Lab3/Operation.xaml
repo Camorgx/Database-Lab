@@ -9,7 +9,7 @@
         Title="教师教学科研登记系统" Height="800" Width="1150" WindowStartupLocation="CenterOwner"
         Closed="WindowClosed" Loaded="WindowLoaded" WindowStyle="None" MouseLeftButtonDown="MoveWindowMouseLeftButtonDown">
     <Grid>
-        <TabControl VerticalContentAlignment="Top"
+        <TabControl VerticalContentAlignment="Top" 
                     materialDesign:ColorZoneAssist.Mode="PrimaryMid"
                     Style="{StaticResource MaterialDesignNavigationRailTabControl}">
             <TabItem Height="80">
@@ -135,7 +135,7 @@
                 </TabItem.Header>
                 <ScrollViewer VerticalScrollBarVisibility="Auto" VerticalAlignment="Top">
                     <StackPanel>
-                        <Grid HorizontalAlignment="Left" Margin="0, 50" VerticalAlignment="Center" Height="50">
+                        <Grid HorizontalAlignment="Center" Margin="0, 50, 250, 50" VerticalAlignment="Center" Height="50">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="70"></ColumnDefinition>
                                 <ColumnDefinition Width="180"></ColumnDefinition>
@@ -150,10 +150,10 @@
                                     FontFamily="Segoe UI Black" FontSize="18" Width="180" Height="50" Click="RemovePaper"
                                     Grid.Column="1" Background="#FF307CD6" BorderBrush="#FF307CD6"/>
                             <Button VerticalAlignment="Center" HorizontalAlignment="Center" Content="修改选中的论文" 
-                                    FontFamily="Segoe UI Black" FontSize="18" Width="180" Height="50" Click="ModifyButtonClick"
+                                    FontFamily="Segoe UI Black" FontSize="18" Width="180" Height="50" Click="ModifyPaperButtonClick"
                                     Grid.Column="3" Background="#FF307CD6" BorderBrush="#FF307CD6"/>
                             <Button VerticalAlignment="Center" HorizontalAlignment="Center" Content="申报论文" 
-                                    FontFamily="Segoe UI Black" FontSize="18" Width="120" Height="50" 
+                                    FontFamily="Segoe UI Black" FontSize="18" Width="120" Height="50" Click="NewPaperButtonClick"
                                     Grid.Column="5" Background="#FF307CD6" BorderBrush="#FF307CD6"/>
                             <Button VerticalAlignment="Center" HorizontalAlignment="Center" Content="刷新" 
                                     FontFamily="Segoe UI Black" FontSize="18" Width="100" Height="50" Click="RefreshPaperButtonClick"

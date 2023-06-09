@@ -1,7 +1,6 @@
 ﻿using MySqlConnector;
 using System.Data;
 using System.Threading.Tasks;
-using System.Windows;
 
 namespace Lab3 {
     static class Database {
@@ -294,7 +293,7 @@ namespace Lab3 {
         }
 
         public static async Task<string> UpdatePaper(PaperRecord paper, PaperUpdateMode mode,
-            bool authorsNeedCheck = true) {
+            bool authorsNeedCheck = false) {
             if (mode == PaperUpdateMode.None) return "ok";
             if (authorsNeedCheck) {
                 string res = await VerifiPaperAuthors(paper);
@@ -308,7 +307,7 @@ namespace Lab3 {
                     $"  paperSource = '{paper.source}', " +
                     $"  paperYear = {paper.year}, " +
                     $"  paperType = {paper.type}, " +
-                    $"  level = {paper.level}" +
+                    $"  level = {paper.level} " +
                     $"where paperID = {paper.id}";
                 await command.ExecuteNonQueryAsync();
             }
@@ -325,17 +324,21 @@ namespace Lab3 {
             return "ok";
         }
 
-        public static async Task<string> AddPaper(PaperRecord paper, bool authorsNeedCheck = true) {
+        public static async Task<bool> CheckExistsOfPaperID(int id) {
+            using var command = connection.CreateCommand();
+            command.CommandText =
+                $"select exists(select paperID from paper where paperID = {id})";
+            using var reader = await command.ExecuteReaderAsync();
+            await reader.ReadAsync();
+            return reader.GetInt32(0) != 0;
+        }
+
+        public static async Task<string> AddPaper(PaperRecord paper, bool authorsNeedCheck = false) {
             if (authorsNeedCheck) {
                 string verRes = await VerifiPaperAuthors(paper);
                 if (verRes != "ok") return $"工号{verRes}不存在。";
             }
             using var command = connection.CreateCommand();
-            command.CommandText = 
-                $"select exists(select paperID from paper where paperID = {paper.id})";
-            using var reader = await command.ExecuteReaderAsync();
-            await reader.ReadAsync();
-            if (reader.GetInt32(0) != 0) return "指定的论文已存在。";
             command.CommandText =
                 $"insert into Paper value ({paper.id}, '{paper.name}', '{paper.source}', " +
                 $"  {paper.year}, {paper.type}, {paper.level})";

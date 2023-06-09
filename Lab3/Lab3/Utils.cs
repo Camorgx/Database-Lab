@@ -1,4 +1,5 @@
 ﻿using MaterialDesignThemes.Wpf;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Lab3 {
@@ -65,12 +66,15 @@ namespace Lab3 {
 
         public static int VerifyReaderAuthors(PaperRecord record) {
             bool metCor = false;
+            ISet<string> authors = new HashSet<string>();
             foreach (var (id, _, cor) in record.authors) {
                 if (id.Length != 5) return 1;
                 if (cor != 0) {
                     if (metCor) return 2;
                     metCor = true;
                 }
+                if (authors.Contains(id)) return 3;
+                else authors.Add(id);
             }
             return 0;
         }
