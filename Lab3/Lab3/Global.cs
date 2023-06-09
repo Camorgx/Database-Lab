@@ -58,5 +58,7 @@ namespace Lab3 {
         public static List<Lesson> userLesson = new();
         public static List<Paper> ownPaper = new();
         public static List<Paper> partedPaper = new();
+
+        public static PaperRecord newPaper = new();
     }
 }

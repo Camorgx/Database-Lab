@@ -1,6 +1,7 @@
 ﻿using MySqlConnector;
 using System.Data;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Lab3 {
     static class Database {
@@ -263,13 +264,84 @@ namespace Lab3 {
             }
             command.CommandText = $"select publish.teacherID as teacherID, teacherName as name, corresponding as cor " +
                                   $"    from publish, teacher " +
-                                  $"where paperID = 1 and publish.teacherID = teacher.teacherID";
+                                  $"where paperID = {id} and publish.teacherID = teacher.teacherID";
             using (var reader = await command.ExecuteReaderAsync()) {
                 while (await reader.ReadAsync()) {
                     res.authors.Add((reader.GetString("teacherID"), reader.GetString("name"), reader.GetInt32("cor")));
                 }
             }
             return res;
+        }
+
+        public enum PaperUpdateMode {
+            All,
+            AttrOnly,
+            AuthorOnly,
+            None
+        }
+
+        public static async Task<string> VerifiPaperAuthors(PaperRecord paper) {
+            using var command = connection.CreateCommand();
+            for (int i = 0; i < paper.authors.Count; i++) {
+                var (id, _, _) = paper.authors[i];
+                command.CommandText =
+                    $"select exists(select teacherID from Teacher where teacherID = {id})";
+                using var reader = await command.ExecuteReaderAsync();
+                await reader.ReadAsync();
+                if (reader.GetInt32(0) == 0) return id;
+            }
+            return "ok";
+        }
+
+        public static async Task<string> UpdatePaper(PaperRecord paper, PaperUpdateMode mode,
+            bool authorsNeedCheck = true) {
+            if (mode == PaperUpdateMode.None) return "ok";
+            if (authorsNeedCheck) {
+                string res = await VerifiPaperAuthors(paper);
+                if (res != "ok") return res;
+            }
+            using var command = connection.CreateCommand();
+            if (mode == PaperUpdateMode.AttrOnly || mode == PaperUpdateMode.All) {
+                command.CommandText = 
+                    $"update Paper set " +
+                    $"  paperName = '{paper.name}', " +
+                    $"  paperSource = '{paper.source}', " +
+                    $"  paperYear = {paper.year}, " +
+                    $"  paperType = {paper.type}, " +
+                    $"  level = {paper.level}" +
+                    $"where paperID = {paper.id}";
+                await command.ExecuteNonQueryAsync();
+            }
+            if (mode == PaperUpdateMode.AuthorOnly || mode == PaperUpdateMode.All) {
+                command.CommandText = $"delete from Publish where paperID = {paper.id}";
+                await command.ExecuteNonQueryAsync();
+                for (int i = 0; i < paper.authors.Count; i++) {
+                    var (id, _, cor) = paper.authors[i];
+                    command.CommandText =
+                        $"insert into Publish value ('{id}', {paper.id}, {i + 1}, {cor != 0})";
+                    await command.ExecuteNonQueryAsync();
+                }
+            }
+            return "ok";
+        }
+
+        public static async Task<string> AddPaper(PaperRecord paper, bool authorsNeedCheck = true) {
+            if (authorsNeedCheck) {
+                string verRes = await VerifiPaperAuthors(paper);
+                if (verRes != "ok") return $"工号{verRes}不存在。";
+            }
+            using var command = connection.CreateCommand();
+            command.CommandText = 
+                $"select exists(select paperID from paper where paperID = {paper.id})";
+            using var reader = await command.ExecuteReaderAsync();
+            await reader.ReadAsync();
+            if (reader.GetInt32(0) != 0) return "指定的论文已存在。";
+            command.CommandText =
+                $"insert into Paper value ({paper.id}, '{paper.name}', '{paper.source}', " +
+                $"  {paper.year}, {paper.type}, {paper.level})";
+            await command.ExecuteNonQueryAsync();
+            await UpdatePaper(paper, PaperUpdateMode.AuthorOnly, false);
+            return "论文添加成功。";
         }
     }
 }

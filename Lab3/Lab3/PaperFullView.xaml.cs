@@ -33,12 +33,31 @@ namespace Lab3 {
             paperName.Text = Record.name;
             paperSouce.Text = Record.source;
             paperYear.Text = Record.year.ToString();
-            paperType.SelectedIndex = Record.type - 1;
-            paperLevel.SelectedIndex = Record.level - 1;
+            paperType.SelectedIndex = Record.type;
+            paperLevel.SelectedIndex = Record.level;
         }
 
-        private void paperIDPreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e) {
+        private void PaperIDPreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e) {
             e.Handled = new Regex("[^0-9]+").IsMatch(e.Text);
+        }
+
+        public PaperRecord GetPaperRecord() {
+            var res = new PaperRecord {
+                id = int.Parse(paperID.Text),
+                name = paperName.Text,
+                source = paperSouce.Text,
+                year = int.Parse(paperYear.Text),
+                type = paperType.SelectedIndex,
+                level = paperLevel.SelectedIndex,
+            };
+            foreach (var item in authors.Items) {
+                Pair pair = (item as Pair) ?? new Pair();
+                string id = pair.作者工号;
+                int cor = (int)pair.是否为通讯作者;
+                if (id.Length != 0)
+                    res.authors.Add((id, "", cor));
+            }
+            return res;
         }
     }
 }

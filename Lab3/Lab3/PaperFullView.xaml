@@ -24,7 +24,7 @@
                     <TextBox materialDesign:HintAssist.Hint="序号"
                          VerticalAlignment="Top" HorizontalAlignment="Center"
                          x:Name="paperID" Width="100" x:FieldModifier="public"
-                         InputMethod.IsInputMethodEnabled="False" PreviewTextInput="paperIDPreviewTextInput"
+                         InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PaperIDPreviewTextInput"
                          Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
                 </StackPanel>
             </StackPanel>
@@ -61,6 +61,7 @@
                     <ComboBox x:Name="paperType" Width="100" x:FieldModifier="public"
                           materialDesign:HintAssist.Hint="论文类型"
                           Style="{StaticResource MaterialDesignFloatingHintComboBox}">
+                        <ComboBoxItem Content="请选择" />
                         <ComboBoxItem Content="full paper" />
                         <ComboBoxItem Content="short paper" />
                         <ComboBoxItem Content="poster paper" />
@@ -74,6 +75,7 @@
                     <ComboBox x:Name="paperLevel" Width="100" x:FieldModifier="public"
                           materialDesign:HintAssist.Hint="论文级别"
                           Style="{StaticResource MaterialDesignFloatingHintComboBox}">
+                        <ComboBoxItem Content="请选择" />
                         <ComboBoxItem Content="CCF-A" />
                         <ComboBoxItem Content="CCF-B" />
                         <ComboBoxItem Content="CCF-C" />

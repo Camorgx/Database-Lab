@@ -167,7 +167,11 @@ namespace Lab3 {
             window.Close();
         }
 
+        public bool verifyToModifyPaper = false;
+        public bool paperCreateWindowOpen = false;
+
         private async void ModifyButtonClick(object sender, RoutedEventArgs e) {
+            verifyToModifyPaper = false;
             if (ownPaper.SelectedItem is not Paper paper) return;
             var window = new PleaseWait() {
                 WindowStartupLocation = WindowStartupLocation.Manual,
@@ -176,12 +180,39 @@ namespace Lab3 {
             };
             window.Show();
             var record = Database.SearchPaper(paper.序号);
+            var currentRecord = await record;
             var showPaper = new ShowPaper {
                 Message = { Content = "修改论文信息" },
-                view = {Record = await record}
+                view = {
+                    Record = currentRecord,
+                    paperID = { IsEnabled = false },
+                },
+                WindowStartupLocation = WindowStartupLocation.Manual,
+                Left = Left + Width / 4,
+                Top = Top + Height / 4,
+                Owner = this
             };
+            showPaper.Show();
+            window.Hide();
+            await Task.Run(() => {
+                while (paperCreateWindowOpen) ;
+            });
+            if (!verifyToModifyPaper) {
+                window.Close();
+                return;
+            }
+            verifyToModifyPaper = true;
+            window.Show();
+            bool authoreCmp = Utils.CompareAuthorList(currentRecord, Global.newPaper);
+            bool attrCmp = Utils.ComparePaperAttr(currentRecord, Global.newPaper);
+            Database.PaperUpdateMode mode = attrCmp ?
+                (authoreCmp ? Database.PaperUpdateMode.None : Database.PaperUpdateMode.AuthorOnly) :
+                (authoreCmp ? Database.PaperUpdateMode.AttrOnly : Database.PaperUpdateMode.All);
+            string res = await Database.UpdatePaper(Global.newPaper, mode, false);
             window.Close();
-            var res = await DialogHost.Show(showPaper, "OperationDialog") ?? "false";
+            if (res == "ok") await Utils.MessageTips("论文信息更新完成。", "OperationDialog");
+            else await Utils.MessageTips($"工号{res}不存在。", "OperationDialog");
+            RefreshPaperButtonClick(sender, e);
         }
     }
 }
