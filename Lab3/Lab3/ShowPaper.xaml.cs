@@ -8,5 +8,9 @@ namespace Lab3 {
         public ShowPaper() {
             InitializeComponent();
         }
+
+        private void OKButtonClick(object sender, System.Windows.RoutedEventArgs e) {
+            
+        }
     }
 }

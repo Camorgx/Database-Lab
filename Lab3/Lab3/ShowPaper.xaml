@@ -15,7 +15,7 @@
                FontFamily="Segoe UI Black" FontSize="14" Margin="0,10" VerticalAlignment="Top" HorizontalAlignment="Right"/>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
             <Button IsDefault="False" Style="{DynamicResource MaterialDesignFlatButton}" HorizontalAlignment="Right" 
-                Margin="16 16 16 0" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" 
+                Margin="16 16 16 0" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Click="OKButtonClick"
                 Content="确认" CommandParameter="true"/>
             <Button IsDefault="True" Style="{DynamicResource MaterialDesignFlatButton}" HorizontalAlignment="Right" 
                 Margin="16 16 16 0" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" 
