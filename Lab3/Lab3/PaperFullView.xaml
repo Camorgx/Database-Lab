@@ -49,8 +49,8 @@
             <StackPanel Grid.Row="1" Grid.Column="0">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon VerticalAlignment="Bottom" Kind="DateRange" Foreground="#707070"/>
-                    <TextBox materialDesign:HintAssist.Hint="发表年份"
-                         VerticalAlignment="Top" HorizontalAlignment="Center"
+                    <TextBox materialDesign:HintAssist.Hint="发表年份" PreviewTextInput="PaperIDPreviewTextInput"
+                         VerticalAlignment="Top" HorizontalAlignment="Center" InputMethod.IsInputMethodEnabled="False"
                          x:Name="paperYear" Width="100" x:FieldModifier="public"
                          Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
                 </StackPanel>

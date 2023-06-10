@@ -189,9 +189,9 @@ namespace Lab3 {
             await Task.Run(() => {
                 while (paperCreateWindowOpen) ;
             });
+            Activate();
             if (!verifyToModifyPaper) {
                 window.Close();
-                Activate();
                 return;
             }
             verifyToModifyPaper = true;
@@ -201,12 +201,13 @@ namespace Lab3 {
             Database.PaperUpdateMode mode = attrCmp ?
                 (authoreCmp ? Database.PaperUpdateMode.None : Database.PaperUpdateMode.AuthorOnly) :
                 (authoreCmp ? Database.PaperUpdateMode.AttrOnly : Database.PaperUpdateMode.All);
-            string res = await Database.UpdatePaper(Global.newPaper, mode, false);
+            bool res = await Database.UpdatePaper(Global.newPaper, mode);
             window.Close();
-            Activate();
-            if (res == "ok") await Utils.MessageTips("论文信息更新完成。", dialogIdentifier);
-            else await Utils.MessageTips($"工号{res}不存在。", dialogIdentifier);
-            RefreshPaperButtonClick(sender, e);
+            if (res) {
+                await Utils.MessageTips("论文信息更新完成。", dialogIdentifier);
+                RefreshPaperButtonClick(sender, e);
+            }
+            else await Utils.MessageTips($"论文信息更新失败。", dialogIdentifier);
         }
 
         private async void NewPaperButtonClick(object sender, RoutedEventArgs e) {
@@ -223,9 +224,19 @@ namespace Lab3 {
             }); 
             Activate();
             if (!verifyToModifyPaper) return;
-            string res = await Database.AddPaper(Global.newPaper, false);
-            await Utils.MessageTips(res, dialogIdentifier);
-            RefreshPaperButtonClick(sender, e);
+            var window = new PleaseWait() {
+                WindowStartupLocation = WindowStartupLocation.Manual,
+                Left = Left + Width / 2.5,
+                Top = Top + Height / 2.5,
+            };
+            window.Show();
+            bool res = await Database.AddPaper(Global.newPaper);
+            window.Close();
+            if (res) {
+                await Utils.MessageTips("论文添加成功。", dialogIdentifier);
+                RefreshPaperButtonClick(sender, e);
+            }
+            else await Utils.MessageTips("论文添加失败。", dialogIdentifier);
         }
     }
 }

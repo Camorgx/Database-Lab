@@ -11,19 +11,9 @@ namespace Lab3 {
             Database = "lab3"
         }.ConnectionString;
         private static readonly MySqlConnection connection = new(connectString);
-        private static readonly MySqlConnection paperWriter = new(connectString);
-        private static readonly MySqlConnection projectWriter = new(connectString);
-        private static readonly MySqlConnection lessonWriter = new(connectString);
 
         public static async Task<bool> Activate() {
-            var conOpener = connection.OpenAsync();
-            var paperOpener = paperWriter.OpenAsync();
-            var projectOpener = projectWriter.OpenAsync();
-            var lessonOpener = lessonWriter.OpenAsync();
-            await conOpener;
-            await paperOpener;
-            await projectOpener;
-            await lessonOpener;
+            await connection.OpenAsync();
             return true;
         }
 
@@ -108,6 +98,8 @@ namespace Lab3 {
 
         public static async Task<bool> LoadPaperData(string teacherID) {
             Global.userPaper.Clear();
+            using var paperWriter = new MySqlConnection(connectString);
+            await paperWriter.OpenAsync();
             using var command = paperWriter.CreateCommand();
             command.CommandText = $"select paper.paperID as paperID, paperName as name, paperSource as source, " +
                                   $"    paperYear as year, paperType as type, level, paperRank, corresponding " +
@@ -132,6 +124,8 @@ namespace Lab3 {
 
         public static async Task<bool> LoadProjectData(string teacherID) {
             Global.userProject.Clear();
+            using var projectWriter = new MySqlConnection(connectString);
+            await projectWriter.OpenAsync();
             using var command = projectWriter.CreateCommand();
             command.CommandText = $"select project.projectID as projectID, projectName as name, projectSource as source, " +
                                   $"    projectType as type, totalMoney, startYear, endYear, projectRank, money " +
@@ -157,6 +151,8 @@ namespace Lab3 {
 
         public static async Task<bool> LoadLessonData(string teacherID) {
             Global.userLesson.Clear();
+            using var lessonWriter = new MySqlConnection(connectString);
+            await lessonWriter.OpenAsync();
             using var command = lessonWriter.CreateCommand();
             command.CommandText = $"select lesson.lessonID as lessonID, lessonName as name, lessonHour as totalHour, " +
                                   $"    lessonType as type, year, term, hour " +
@@ -292,36 +288,41 @@ namespace Lab3 {
             return "ok";
         }
 
-        public static async Task<string> UpdatePaper(PaperRecord paper, PaperUpdateMode mode,
-            bool authorsNeedCheck = false) {
-            if (mode == PaperUpdateMode.None) return "ok";
-            if (authorsNeedCheck) {
-                string res = await VerifiPaperAuthors(paper);
-                if (res != "ok") return res;
-            }
-            using var command = connection.CreateCommand();
-            if (mode == PaperUpdateMode.AttrOnly || mode == PaperUpdateMode.All) {
-                command.CommandText = 
-                    $"update Paper set " +
-                    $"  paperName = '{paper.name}', " +
-                    $"  paperSource = '{paper.source}', " +
-                    $"  paperYear = {paper.year}, " +
-                    $"  paperType = {paper.type}, " +
-                    $"  level = {paper.level} " +
-                    $"where paperID = {paper.id}";
-                await command.ExecuteNonQueryAsync();
-            }
-            if (mode == PaperUpdateMode.AuthorOnly || mode == PaperUpdateMode.All) {
-                command.CommandText = $"delete from Publish where paperID = {paper.id}";
-                await command.ExecuteNonQueryAsync();
-                for (int i = 0; i < paper.authors.Count; i++) {
-                    var (id, _, cor) = paper.authors[i];
+        public static async Task<bool> UpdatePaper(PaperRecord paper, PaperUpdateMode mode,
+            MySqlTransaction? trans = null) {
+            if (mode == PaperUpdateMode.None) return true;
+            var transaction = trans ?? await connection.BeginTransactionAsync();
+            try {
+                using var command = connection.CreateCommand();
+                command.Transaction = transaction;
+                if (mode == PaperUpdateMode.AttrOnly || mode == PaperUpdateMode.All) {
                     command.CommandText =
-                        $"insert into Publish value ('{id}', {paper.id}, {i + 1}, {cor != 0})";
+                        $"update Paper set " +
+                        $"  paperName = '{paper.name}', " +
+                        $"  paperSource = '{paper.source}', " +
+                        $"  paperYear = {paper.year}, " +
+                        $"  paperType = {paper.type}, " +
+                        $"  level = {paper.level} " +
+                        $"where paperID = {paper.id}";
                     await command.ExecuteNonQueryAsync();
                 }
+                if (mode == PaperUpdateMode.AuthorOnly || mode == PaperUpdateMode.All) {
+                    command.CommandText = $"delete from Publish where paperID = {paper.id}";
+                    await command.ExecuteNonQueryAsync();
+                    for (int i = 0; i < paper.authors.Count; i++) {
+                        var (id, _, cor) = paper.authors[i];
+                        command.CommandText =
+                            $"insert into Publish value ('{id}', {paper.id}, {i + 1}, {cor != 0})";
+                        await command.ExecuteNonQueryAsync();
+                    }
+                }
             }
-            return "ok";
+            catch (MySqlException) {
+                await transaction.RollbackAsync();
+                return false;
+            }
+            if (trans is null) await transaction.CommitAsync();
+            return true;
         }
 
         public static async Task<bool> CheckExistsOfPaperID(int id) {
@@ -333,18 +334,24 @@ namespace Lab3 {
             return reader.GetInt32(0) != 0;
         }
 
-        public static async Task<string> AddPaper(PaperRecord paper, bool authorsNeedCheck = false) {
-            if (authorsNeedCheck) {
-                string verRes = await VerifiPaperAuthors(paper);
-                if (verRes != "ok") return $"工号{verRes}不存在。";
+        public static async Task<bool> AddPaper(PaperRecord paper) {
+            var transaction = await connection.BeginTransactionAsync();
+            try {
+                using var command = connection.CreateCommand();
+                command.Transaction = transaction;
+                command.CommandText =
+                    $"insert into Paper value ({paper.id}, '{paper.name}', '{paper.source}', " +
+                    $"  {paper.year}, {paper.type}, {paper.level})";
+                await command.ExecuteNonQueryAsync();
+                if (!await UpdatePaper(paper, PaperUpdateMode.AuthorOnly, transaction))
+                    return false;
             }
-            using var command = connection.CreateCommand();
-            command.CommandText =
-                $"insert into Paper value ({paper.id}, '{paper.name}', '{paper.source}', " +
-                $"  {paper.year}, {paper.type}, {paper.level})";
-            await command.ExecuteNonQueryAsync();
-            await UpdatePaper(paper, PaperUpdateMode.AuthorOnly, false);
-            return "论文添加成功。";
+            catch (MySqlException) {
+                await transaction.RollbackAsync();
+                return false;
+            }
+            await transaction.CommitAsync();
+            return true;
         }
     }
 }
