@@ -106,7 +106,6 @@ namespace Lab3 {
                                   $"from paper, publish " +
                                   $"where teacherID = '{teacherID}' and paper.paperID = publish.paperID";
             using var reader = await command.ExecuteReaderAsync();
-            Global.teacher.ID = teacherID;
             while (await reader.ReadAsync()) {
                 Global.userPaper.Add(new Paper {
                     序号 = reader.GetInt32("paperID"),
@@ -132,7 +131,6 @@ namespace Lab3 {
                                   $"from project, undertake " +
                                   $"where teacherID = '{teacherID}' and project.projectID = undertake.projectID";
             using var reader = await command.ExecuteReaderAsync();
-            Global.teacher.ID = teacherID;
             while (await reader.ReadAsync()) {
                 Global.userProject.Add(new Project {
                     项目号 = reader.GetString("projectID"),
@@ -162,13 +160,13 @@ namespace Lab3 {
             Global.teacher.ID = teacherID;
             while (await reader.ReadAsync()) {
                 Global.userLesson.Add(new Lesson {
-                    ID = reader.GetString("lessonID"),
-                    Name = reader.GetString("name"),
-                    TotalHour = reader.GetInt32("totalHour"),
-                    Type = ItemTranslation.LessonType[reader.GetInt32("type")],
-                    Year = reader.GetInt32("year"),
-                    Term = reader.GetInt32("term"),
-                    Hour = reader.GetInt32("hour")
+                    课程号 = reader.GetString("lessonID"),
+                    课程名称 = reader.GetString("name"),
+                    学时数 = reader.GetInt32("totalHour"),
+                    课程性质 = ItemTranslation.LessonType[reader.GetInt32("type")],
+                    年份 = reader.GetInt32("year"),
+                    学期 = reader.GetInt32("term"),
+                    承担学时 = reader.GetInt32("hour")
                 });
             }
             return true;
@@ -389,7 +387,7 @@ namespace Lab3 {
             command.Transaction = transaction;
             command.CommandText = $"select projectID as id, projectName as name, projectSource as source, " +
                                   $"    projectType as type, totalMoney, startYear, endYear " +
-                                  $"from project where projectID = {id}";
+                                  $"from project where projectID = '{id}'";
             using (var reader = await command.ExecuteReaderAsync()) {
                 await reader.ReadAsync();
                 res = new ProjectRecord {
@@ -404,7 +402,7 @@ namespace Lab3 {
             }
             command.CommandText = $"select undertake.teacherID as teacherID, teacherName as name, money " +
                                   $"    from undertake, teacher " +
-                                  $"where projectID = {id} and undertake.teacherID = teacher.teacherID " +
+                                  $"where projectID = '{id}' and undertake.teacherID = teacher.teacherID " +
                                   $"order by projectRank";
             using (var reader = await command.ExecuteReaderAsync()) {
                 while (await reader.ReadAsync()) {
@@ -450,11 +448,11 @@ namespace Lab3 {
                         $"  totalMoney = {project.totalMoney}, " +
                         $"  startYear = {project.startYear}, " +
                         $"  endYear = {project.endYear} " +
-                        $"where projectID = {project.id}";
+                        $"where projectID = '{project.id}'";
                     await command.ExecuteNonQueryAsync();
                 }
                 if (mode == UpdateMode.TeacherOnly || mode == UpdateMode.All) {
-                    command.CommandText = $"delete from Undertake where projectID = {project.id}";
+                    command.CommandText = $"delete from Undertake where projectID = '{project.id}'";
                     await command.ExecuteNonQueryAsync();
                     for (int i = 0; i < project.teachers.Count; i++) {
                         var (id, _, money) = project.teachers[i];
@@ -491,6 +489,137 @@ namespace Lab3 {
                     $"  {project.type}, {project.totalMoney}, {project.startYear}, {project.endYear})";
                 await command.ExecuteNonQueryAsync();
                 if (!await UpdateProject(project, UpdateMode.TeacherOnly, transaction))
+                    return false;
+            }
+            catch (MySqlException) {
+                await transaction.RollbackAsync();
+                return false;
+            }
+            await transaction.CommitAsync();
+            return true;
+        }
+
+        public static async Task<int> RemoveLesson(string id) {
+            using var command = connection.CreateCommand();
+            command.CommandText = "deleteLesson";
+            command.CommandType = CommandType.StoredProcedure;
+            var idParam = new MySqlParameter {
+                Value = id,
+                ParameterName = "ID",
+                Direction = ParameterDirection.Input,
+            };
+            var statusParam = new MySqlParameter {
+                ParameterName = "result",
+                Direction = ParameterDirection.Output,
+            };
+            command.Parameters.AddRange(new MySqlParameter[] { idParam, statusParam });
+            await command.ExecuteNonQueryAsync();
+            return (int)(statusParam.Value ?? 1);
+        }
+
+        public static async Task<LessonRecord> SearchLesson(string id) {
+            LessonRecord res;
+            using var command = connection.CreateCommand();
+            var transaction = await connection.BeginTransactionAsync();
+            command.Transaction = transaction;
+            command.CommandText = $"select lessonID as id, lessonName as name, lessonHour as hour, " +
+                                  $"    lessonType as type " +
+                                  $"from lesson where lessonID = '{id}'";
+            using (var reader = await command.ExecuteReaderAsync()) {
+                await reader.ReadAsync();
+                res = new LessonRecord {
+                    id = id,
+                    name = reader.GetString("name"),
+                    totalHour = reader.GetInt32("hour"),
+                    type = reader.GetInt32("type")
+                };
+            }
+            command.CommandText = $"select teach.teacherID as teacherID, teacherName as name, year, term, hour " +
+                                  $"    from teach, teacher " +
+                                  $"where lessonID = '{id}' and teach.teacherID = teacher.teacherID " +
+                                  $"order by year";
+            using (var reader = await command.ExecuteReaderAsync()) {
+                while (await reader.ReadAsync()) {
+                    res.teachers.Add((reader.GetString("teacherID"), reader.GetString("name"), 
+                        reader.GetInt32("year"), reader.GetInt32("term"), reader.GetInt32("hour")));
+                }
+            }
+            await transaction.CommitAsync();
+            return res;
+        }
+
+        public static async Task<string> VerifiLessonTeachers(LessonRecord lesson) {
+            using var command = connection.CreateCommand();
+            var transaction = await connection.BeginTransactionAsync();
+            command.Transaction = transaction;
+            for (int i = 0; i < lesson.teachers.Count; i++) {
+                var (id, _, _, _, _) = lesson.teachers[i];
+                command.CommandText =
+                    $"select exists(select teacherID from Teacher where teacherID = '{id}')";
+                using var reader = await command.ExecuteReaderAsync();
+                await reader.ReadAsync();
+                if (reader.GetInt32(0) == 0) {
+                    await transaction.CommitAsync();
+                    return "#" + id;
+                }
+            }
+            await transaction.CommitAsync();
+            return "ok";
+        }
+
+        public static async Task<bool> UpdateLesson(LessonRecord lesson, UpdateMode mode,
+            MySqlTransaction? trans = null) {
+            if (mode == UpdateMode.None) return true;
+            var transaction = trans ?? await connection.BeginTransactionAsync();
+            try {
+                using var command = connection.CreateCommand();
+                command.Transaction = transaction;
+                if (mode == UpdateMode.AttrOnly || mode == UpdateMode.All) {
+                    command.CommandText =
+                        $"update Lesson set " +
+                        $"  lessonName = '{lesson.name}', " +
+                        $"  lessonHour = {lesson.totalHour}, " +
+                        $"  lessonType = {lesson.type} " +
+                        $"where lessonID = '{lesson.id}'";
+                    await command.ExecuteNonQueryAsync();
+                }
+                if (mode == UpdateMode.TeacherOnly || mode == UpdateMode.All) {
+                    command.CommandText = $"delete from Teach where lessonID = '{lesson.id}'";
+                    await command.ExecuteNonQueryAsync();
+                    for (int i = 0; i < lesson.teachers.Count; i++) {
+                        var (id, _, year, term, hour) = lesson.teachers[i];
+                        command.CommandText =
+                            $"insert into Teach value ('{id}', '{lesson.id}', {year}, {term}, {hour})";
+                        await command.ExecuteNonQueryAsync();
+                    }
+                }
+            }
+            catch (MySqlException) {
+                await transaction.RollbackAsync();
+                return false;
+            }
+            if (trans is null) await transaction.CommitAsync();
+            return true;
+        }
+
+        public static async Task<bool> CheckExistsOfLessonID(string id) {
+            using var command = connection.CreateCommand();
+            command.CommandText =
+                $"select exists(select lessonID from Lesson where lessonID = '{id}')";
+            using var reader = await command.ExecuteReaderAsync();
+            await reader.ReadAsync();
+            return reader.GetInt32(0) != 0;
+        }
+
+        public static async Task<bool> AddLesson(LessonRecord lesson) {
+            var transaction = await connection.BeginTransactionAsync();
+            try {
+                using var command = connection.CreateCommand();
+                command.Transaction = transaction;
+                command.CommandText =
+                    $"insert into Lesson value ('{lesson.id}', '{lesson.name}', {lesson.totalHour}, {lesson.type})";
+                await command.ExecuteNonQueryAsync();
+                if (!await UpdateLesson(lesson, UpdateMode.TeacherOnly, transaction))
                     return false;
             }
             catch (MySqlException) {

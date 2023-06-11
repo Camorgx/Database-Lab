@@ -34,7 +34,7 @@ namespace Lab3 {
                 await Utils.MessageTips("请选择论文类型。", dialogVerifier);
                 return;
             }
-            int res = Utils.VerifyReaderAuthors(Global.newPaper);
+            int res = Utils.VerifyPaperAuthors(Global.newPaper);
             if (res == 1) await Utils.MessageTips("作者工号的格式不正确。", dialogVerifier);
             else if (res == 2) await Utils.MessageTips("一篇论文只能有一个通讯作者。", dialogVerifier);
             else if (res == 3) await Utils.MessageTips("作者的排名应唯一。", dialogVerifier);

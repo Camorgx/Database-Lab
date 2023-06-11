@@ -71,10 +71,15 @@ namespace Lab3 {
             partedProject.ItemsSource = Global.partedProject;
         }
 
+        private void InitLesson() {
+            userLesson.ItemsSource = Global.userLesson;
+        }
+
         private void WindowLoaded(object sender, RoutedEventArgs e) {
             InitMyInfo();
             InitPaper();
             InitProject();
+            InitLesson();
         }
 
         private static readonly string dialogIdentifier = "OperationDialog";
@@ -357,6 +362,117 @@ namespace Lab3 {
                 RefreshProjectButtonClick(sender, e);
             }
             else await Utils.MessageTips("项目添加失败。", dialogIdentifier);
+        }
+
+        private async void RemoveLesson(object sender, RoutedEventArgs e) {
+            if (userLesson.SelectedItem is not Lesson lesson) return;
+            if (!await Utils.VerificationDialog($"将删除课程号: {lesson.课程号}，不可恢复，是否确定？",
+                dialogIdentifier)) return;
+            var window = new PleaseWait() {
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            };
+            window.Show();
+            var id = lesson.课程号;
+            int res = await Database.RemoveLesson(id);
+            await RefreshLesson();
+            window.Close();
+            if (res == 0) await Utils.MessageTips("所选课程已删除。", dialogIdentifier);
+            else if (res == 1) await Utils.MessageTips("数据库错误。", dialogIdentifier);
+            else await Utils.MessageTips("未知错误。", dialogIdentifier);
+        }
+
+        private async Task<bool> RefreshLesson() {
+            await Database.LoadLessonData(Global.teacher.ID);
+            userLesson.Items.Refresh();
+            return true;
+        }
+
+        private async void RefreshLessonButtonClick(object sender, RoutedEventArgs e) {
+            var refresh = RefreshLesson();
+            var window = new PleaseWait() {
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            };
+            window.Show();
+            await refresh;
+            window.Close();
+        }
+
+        public bool verifyToModifyLesson = false;
+        public bool lessonCreateWindowOpen = false;
+
+        private async void ModifyLessonButtonClick(object sender, RoutedEventArgs e) {
+            verifyToModifyLesson = false;
+            if (userLesson.SelectedItem is not Lesson lesson) return;
+            var window = new PleaseWait() {
+                WindowStartupLocation = WindowStartupLocation.Manual,
+                Left = Left + Width / 2.5,
+                Top = Top + Height / 2.5,
+            };
+            window.Show();
+            var record = Database.SearchLesson(lesson.课程号);
+            var currentRecord = await record;
+            var showLesson = new ShowLesson {
+                Message = { Content = "修改课程信息" },
+                view = {
+                    Record = currentRecord,
+                    lessonID = { IsEnabled = false },
+                },
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Owner = this
+            };
+            showLesson.Show();
+            window.Hide();
+            await Task.Run(() => {
+                while (lessonCreateWindowOpen) ;
+            });
+            Activate();
+            if (!verifyToModifyLesson) {
+                window.Close();
+                return;
+            }
+            verifyToModifyLesson = true;
+            window.Show();
+            bool authoreCmp = Utils.CompareTeacherList(currentRecord, Global.newLesson);
+            bool attrCmp = Utils.CompareLessonAttr(currentRecord, Global.newLesson);
+            Database.UpdateMode mode = attrCmp ?
+                (authoreCmp ? Database.UpdateMode.None : Database.UpdateMode.TeacherOnly) :
+                (authoreCmp ? Database.UpdateMode.AttrOnly : Database.UpdateMode.All);
+            bool res = await Database.UpdateLesson(Global.newLesson, mode);
+            window.Close();
+            if (res) {
+                await Utils.MessageTips("课程信息更新完成。", dialogIdentifier);
+                RefreshLessonButtonClick(sender, e);
+            }
+            else await Utils.MessageTips($"课程信息更新失败。", dialogIdentifier);
+        }
+
+        private async void NewLessonButtonClick(object sender, RoutedEventArgs e) {
+            var showLesson = new ShowLesson {
+                Message = { Content = "添加新课程" },
+                CheckLessonID = true,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Owner = this
+            };
+            verifyToModifyLesson = false;
+            showLesson.Show();
+            await Task.Run(() => {
+                while (lessonCreateWindowOpen) ;
+            });
+            Activate();
+            if (!verifyToModifyLesson) return;
+            var window = new PleaseWait() {
+                WindowStartupLocation = WindowStartupLocation.Manual,
+                Left = Left + Width / 2.5,
+                Top = Top + Height / 2.5,
+            };
+            window.Show();
+            bool res = await Database.AddLesson(Global.newLesson);
+            window.Close();
+            if (res) {
+                await Utils.MessageTips("课程添加成功。", dialogIdentifier);
+                RefreshLessonButtonClick(sender, e);
+            }
+            else await Utils.MessageTips("课程添加失败。", dialogIdentifier);
         }
     }
 }

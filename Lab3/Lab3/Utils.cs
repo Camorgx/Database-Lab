@@ -43,6 +43,8 @@ namespace Lab3 {
         }
 
         public static bool CompareAuthorList(PaperRecord a, PaperRecord b) {
+            a.authors.Sort();
+            b.authors.Sort();
             if (a.authors.Count != b.authors.Count) return false;
             for (int i = 0; i < a.authors.Count; i++) {
                 if (a.authors[i].id != b.authors[i].id
@@ -65,7 +67,7 @@ namespace Lab3 {
             return ComparePaperAttr(a, b) && CompareAuthorList(a, b);
         }
 
-        public static int VerifyReaderAuthors(PaperRecord record) {
+        public static int VerifyPaperAuthors(PaperRecord record) {
             bool metCor = false;
             ISet<string> authors = new HashSet<string>();
             foreach (var (id, _, cor) in record.authors) {
@@ -91,6 +93,8 @@ namespace Lab3 {
         }
 
         public static bool CompareTeacherList(ProjectRecord a, ProjectRecord b) {
+            a.teachers.Sort();
+            b.teachers.Sort();
             if (a.teachers.Count != b.teachers.Count) return false;
             for (int i = 0; i < a.teachers.Count; i++) {
                 if (a.teachers[i].id != b.teachers[i].id
@@ -124,6 +128,48 @@ namespace Lab3 {
                 total += money;
             }
             return Math.Abs(record.totalMoney - total) < 0.01 ? 0 : 2;
+        }
+
+        public static bool CompareTeacherList(LessonRecord a, LessonRecord b) {
+            a.teachers.Sort();
+            b.teachers.Sort();
+            if (a.teachers.Count != b.teachers.Count) return false;
+            for (int i = 0; i < a.teachers.Count; i++) {
+                if (a.teachers[i].id != b.teachers[i].id) return false;
+                if (a.teachers[i].year != b.teachers[i].year) return false;
+                if (a.teachers[i].term != b.teachers[i].term) return false;
+                if (a.teachers[i].hour != b.teachers[i].hour) return false;
+            }
+            return true;
+        }
+
+        public static bool CompareLessonAttr(LessonRecord a, LessonRecord b) {
+            if (a.id != b.id) return false;
+            if (a.name != b.name) return false;
+            if (a.totalHour != b.totalHour) return false;
+            if (a.type != b.type) return false;
+            return true;
+        }
+
+        public static bool CompareLessonRecord(LessonRecord a, LessonRecord b) {
+            return CompareLessonAttr(a, b) && CompareTeacherList(a, b);
+        }
+
+        public static int VerifyLessonTeachers(LessonRecord record) {
+            Dictionary<int, int> table = new();
+            HashSet<(string id, int year, int term)> authors = new();
+            foreach (var (id, _, year, term, hour) in record.teachers) {
+                if (id.Length != 5) return 1;
+                if (term == 0) return 4;
+                var testTuple = (id, year, term);
+                if (authors.Contains(testTuple)) return 3;
+                else authors.Add(testTuple);
+                if (table.ContainsKey(year)) table[year] += hour;
+                else table[year] = hour;
+            }
+            foreach (int total in table.Values) 
+                if (total != record.totalHour) return 2;
+            return 0;
         }
     }
 }

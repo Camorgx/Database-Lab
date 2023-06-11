@@ -83,7 +83,7 @@ create table Teach
    year                 int,
    term                 int,
    hour                 int,
-   primary key (teacherID, lessonID)
+   primary key (teacherID, lessonID, year, term)
 );
 
 /*==============================================================*/

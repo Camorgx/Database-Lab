@@ -25,13 +25,13 @@ namespace Lab3 {
     }
 
     class Lesson {
-        public string ID { get; set; } = "";
-        public string Name { get; set; } = "";
-        public int TotalHour { get; set; } = 0;
-        public string Type { get; set; } = "";
-        public int Year { get; set; } = 2010;
-        public int Term { get; set; } = 1;
-        public int Hour { get; set; } = 0;
+        public string 课程号 { get; set; } = "";
+        public string 课程名称 { get; set; } = "";
+        public int 学时数 { get; set; } = 0;
+        public string 课程性质 { get; set; } = "";
+        public int 年份 { get; set; } = 2010;
+        public int 学期 { get; set; } = 1;
+        public int 承担学时 { get; set; } = 0;
     }
 
     class Teacher {
@@ -62,6 +62,14 @@ namespace Lab3 {
         public List<(string id, string name, float money)> teachers = new();
     }
 
+    public class LessonRecord {
+        public string id = "";
+        public string name = "";
+        public int totalHour = 0;
+        public int type = 0;
+        public List<(string id, string name, int year, int term, int hour)> teachers = new();
+    }
+
     static class Global {
         public static Teacher teacher = new();
         public static List<Paper> userPaper = new();
@@ -74,5 +82,6 @@ namespace Lab3 {
 
         public static PaperRecord newPaper = new();
         public static ProjectRecord newProject = new();
+        public static LessonRecord newLesson = new();
     }
 }

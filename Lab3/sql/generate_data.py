@@ -25,13 +25,13 @@ for i in range(1, 21):
 
     lessonID = '%05d' % i
     lessonName = f'Lesson{i}'
-    lessonCandidate = random.randint(1, 5)
+    termCnt = random.randint(1, 3)
     totalHour = 0
+    year = random.randint(2010, 2020)
     random.shuffle(teacherList)
-    for j in range(1, lessonCandidate + 1):
+    for j in range(1, termCnt + 1):
         teacher = teacherList[j - 1]
         term = j
-        year = random.randint(2010, 2020)
         hour = random.randint(1, 10)
         teach.append("('%05d', '%s', %d, %d, %d)" % (teacher, lessonID, year, term, hour))
         totalHour += hour

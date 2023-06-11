@@ -16,10 +16,8 @@ namespace Lab3 {
             try {
                 Global.newProject = view.GetProjectRecord();
             }
-            catch (System.ArgumentException ex) {
-                if (ex.Message.StartsWith("#"))
-                    await Utils.MessageTips($"工号为 {ex.Message[1..]} 的教师的分担金额格式不正确。", dialogVerifier);
-                else await Utils.MessageTips("项目总金额格式不正确。", dialogVerifier);
+            catch (System.ArgumentException) {
+                await Utils.MessageTips("项目总金额格式不正确。", dialogVerifier);
                 return;
             }
             if (Global.newProject.teachers.Count == 0) {

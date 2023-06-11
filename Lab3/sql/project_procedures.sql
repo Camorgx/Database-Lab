@@ -3,7 +3,7 @@ drop procedure if exists deleteProject;
 delimiter //
 
 create procedure deleteProject(
-    in ID char(5),
+    in ID char(255),
     out result int
 )
 begin

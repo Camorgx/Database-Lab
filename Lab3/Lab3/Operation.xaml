@@ -261,6 +261,55 @@
                         <TextBlock HorizontalAlignment="Center" Text="我的课程" />
                     </StackPanel>
                 </TabItem.Header>
+                <ScrollViewer VerticalScrollBarVisibility="Auto" VerticalAlignment="Top" MaxHeight="800">
+                    <StackPanel>
+                        <Grid HorizontalAlignment="Center" Margin="0, 50, 250, 50" VerticalAlignment="Center" Height="50">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="70"></ColumnDefinition>
+                                <ColumnDefinition Width="180"></ColumnDefinition>
+                                <ColumnDefinition Width="50"></ColumnDefinition>
+                                <ColumnDefinition Width="180"></ColumnDefinition>
+                                <ColumnDefinition Width="50"></ColumnDefinition>
+                                <ColumnDefinition Width="140"></ColumnDefinition>
+                                <ColumnDefinition Width="50"></ColumnDefinition>
+                                <ColumnDefinition Width="100"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Button VerticalAlignment="Center" HorizontalAlignment="Center" Content="删除选中的课程" 
+                                    FontFamily="Segoe UI Black" FontSize="18" Width="180" Height="50" Click="RemoveLesson"
+                                    Grid.Column="1" Background="#FF307CD6" BorderBrush="#FF307CD6"/>
+                            <Button VerticalAlignment="Center" HorizontalAlignment="Center" Content="修改选中的课程" 
+                                    FontFamily="Segoe UI Black" FontSize="18" Width="180" Height="50" Click="ModifyLessonButtonClick"
+                                    Grid.Column="3" Background="#FF307CD6" BorderBrush="#FF307CD6"/>
+                            <Button VerticalAlignment="Center" HorizontalAlignment="Center" Content="添加新课程" 
+                                    FontFamily="Segoe UI Black" FontSize="18" Width="140" Height="50" Click="NewLessonButtonClick"
+                                    Grid.Column="5" Background="#FF307CD6" BorderBrush="#FF307CD6"/>
+                            <Button VerticalAlignment="Center" HorizontalAlignment="Center" Content="刷新" 
+                                    FontFamily="Segoe UI Black" FontSize="18" Width="100" Height="50" Click="RefreshLessonButtonClick"
+                                    Grid.Column="7" Background="#FF307CD6" BorderBrush="#FF307CD6"/>
+                        </Grid>
+                        <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="800"></ColumnDefinition>
+                                <ColumnDefinition Width="150"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="80"></RowDefinition>
+                                <RowDefinition Height="auto"></RowDefinition>
+                                <RowDefinition Height="50"></RowDefinition>
+                                <RowDefinition Height="80"></RowDefinition>
+                                <RowDefinition Height="auto"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0"
+                                        VerticalAlignment="Top" HorizontalAlignment="Left">
+                                <Label Content="我教的课" FontFamily="Segoe UI Black" FontSize="24"/>
+                            </StackPanel>
+                            <DataGrid CanUserAddRows="False" x:Name="userLesson" IsReadOnly="True"
+                                      AutoGenerateColumns="True"
+                                      SelectionMode="Single" SelectionUnit="FullRow" Grid.Column="0" Grid.Row="1">
+                            </DataGrid>
+                        </Grid>
+                    </StackPanel>
+                </ScrollViewer>
             </TabItem>
             <TabItem IsEnabled="False" Height="300"></TabItem>
             <TabItem>

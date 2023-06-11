@@ -22,7 +22,7 @@
             <StackPanel Grid.Row="0" Grid.Column="0">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon VerticalAlignment="Bottom" Kind="Identifier" Foreground="#707070"/>
-                    <TextBox materialDesign:HintAssist.Hint="序号"
+                    <TextBox materialDesign:HintAssist.Hint="项目号"
                          VerticalAlignment="Top" HorizontalAlignment="Center"
                          x:Name="projectID" Width="100" x:FieldModifier="public"
                          InputMethod.IsInputMethodEnabled="False"
