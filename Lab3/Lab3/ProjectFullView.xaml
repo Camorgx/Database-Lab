@@ -1,0 +1,101 @@
+﻿<UserControl x:Class="Lab3.ProjectFullView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:local="clr-namespace:Lab3"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="600" Loaded="UserControlLoaded">
+    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" MinWidth="500">
+        <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="50"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="120"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Row="0" Grid.Column="0">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon VerticalAlignment="Bottom" Kind="Identifier" Foreground="#707070"/>
+                    <TextBox materialDesign:HintAssist.Hint="序号"
+                         VerticalAlignment="Top" HorizontalAlignment="Center"
+                         x:Name="projectID" Width="100" x:FieldModifier="public"
+                         InputMethod.IsInputMethodEnabled="False"
+                         Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Grid.Row="0" Grid.Column="1">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon VerticalAlignment="Bottom" Kind="BagPersonal" Foreground="#707070"/>
+                    <TextBox materialDesign:HintAssist.Hint="项目名称"
+                         VerticalAlignment="Top" HorizontalAlignment="Center"
+                         x:Name="projectName" Width="100" x:FieldModifier="public"
+                         Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Grid.Row="0" Grid.Column="2">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon VerticalAlignment="Bottom" Kind="Journal" Foreground="#707070"/>
+                    <TextBox materialDesign:HintAssist.Hint="项目来源"
+                         VerticalAlignment="Top" HorizontalAlignment="Center"
+                         x:Name="projectSouce" Width="100" x:FieldModifier="public"
+                         Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Grid.Row="0" Grid.Column="3">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="FormatListBulletedType" VerticalAlignment="Bottom" Foreground="#707070"/>
+                    <ComboBox x:Name="projectType" Width="100" x:FieldModifier="public"
+                          materialDesign:HintAssist.Hint="项目类型"
+                          Style="{StaticResource MaterialDesignFloatingHintComboBox}">
+                        <ComboBoxItem Content="请选择" />
+                        <ComboBoxItem Content="国家级项目" />
+                        <ComboBoxItem Content="省部级项目" />
+                        <ComboBoxItem Content="市厅级项目" />
+                        <ComboBoxItem Content="企业合作项目" />
+                        <ComboBoxItem Content="其他类型项目" />
+                    </ComboBox>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Grid.Row="1" Grid.Column="0">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon VerticalAlignment="Bottom" Kind="Money" Foreground="#707070"/>
+                    <TextBox materialDesign:HintAssist.Hint="总经费"
+                         VerticalAlignment="Top" HorizontalAlignment="Center"
+                         x:Name="totalMoney" Width="100" x:FieldModifier="public"
+                         Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Grid.Row="1" Grid.Column="1">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon VerticalAlignment="Bottom" Kind="DateRange" Foreground="#707070"/>
+                    <TextBox materialDesign:HintAssist.Hint="开始年份" PreviewTextInput="InputNumberOnly"
+                         VerticalAlignment="Top" HorizontalAlignment="Center" InputMethod.IsInputMethodEnabled="False"
+                         x:Name="startYear" Width="100" x:FieldModifier="public"
+                         Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Grid.Row="1" Grid.Column="2">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon VerticalAlignment="Bottom" Kind="DateRange" Foreground="#707070"/>
+                    <TextBox materialDesign:HintAssist.Hint="结束年份" PreviewTextInput="InputNumberOnly"
+                         VerticalAlignment="Top" HorizontalAlignment="Center" InputMethod.IsInputMethodEnabled="False"
+                         x:Name="endYear" Width="100" x:FieldModifier="public"
+                         Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+        <ScrollViewer HorizontalAlignment="Center" VerticalAlignment="Center" materialDesign:ScrollBarAssist.ButtonsVisibility="Visible"
+                      VerticalScrollBarVisibility="Auto" MaxHeight="300" MinWidth="500">
+            <DataGrid CanUserAddRows="True" x:Name="teachers" IsReadOnly="False" MinColumnWidth="200"
+                      AutoGenerateColumns="True" x:FieldModifier="public" MinHeight="300" MinWidth="400"
+                      SelectionMode="Single" SelectionUnit="Cell">
+            </DataGrid>
+        </ScrollViewer>
+    </StackPanel>
+</UserControl>

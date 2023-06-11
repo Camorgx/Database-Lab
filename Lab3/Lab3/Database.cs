@@ -135,15 +135,15 @@ namespace Lab3 {
             Global.teacher.ID = teacherID;
             while (await reader.ReadAsync()) {
                 Global.userProject.Add(new Project {
-                    ID = reader.GetString("projectID"),
-                    Name = reader.GetString("name"),
-                    Source = reader.GetString("source"),
-                    Type = ItemTranslation.ProjectType[reader.GetInt32("type")],
-                    TotalMoney = reader.GetFloat("totalMoney"),
-                    StartYear = reader.GetInt32("startYear"),
-                    EndYear = reader.GetInt32("endYear"),
-                    Rank = reader.GetInt32("projectRank"),
-                    Money = reader.GetFloat("money")
+                    项目号 = reader.GetString("projectID"),
+                    项目名称 = reader.GetString("name"),
+                    项目来源 = reader.GetString("source"),
+                    项目类型 = ItemTranslation.ProjectType[reader.GetInt32("type")],
+                    总经费 = reader.GetFloat("totalMoney"),
+                    开始年份 = reader.GetInt32("startYear"),
+                    结束年份 = reader.GetInt32("endYear"),
+                    排名 = reader.GetInt32("projectRank"),
+                    承担金额 = reader.GetFloat("money")
                 });
             }
             return true;
@@ -243,6 +243,8 @@ namespace Lab3 {
         public static async Task<PaperRecord> SearchPaper(int id) {
             PaperRecord res;
             using var command = connection.CreateCommand();
+            var transaction = await connection.BeginTransactionAsync();
+            command.Transaction = transaction;
             command.CommandText = $"select paperID as id, paperName as name, paperSource as source, " +
                                   $"    paperYear as year, paperType as type, level " +
                                   $"from paper where paperID = {id}";
@@ -259,43 +261,51 @@ namespace Lab3 {
             }
             command.CommandText = $"select publish.teacherID as teacherID, teacherName as name, corresponding as cor " +
                                   $"    from publish, teacher " +
-                                  $"where paperID = {id} and publish.teacherID = teacher.teacherID";
+                                  $"where paperID = {id} and publish.teacherID = teacher.teacherID " +
+                                  $"order by paperRank";
             using (var reader = await command.ExecuteReaderAsync()) {
                 while (await reader.ReadAsync()) {
                     res.authors.Add((reader.GetString("teacherID"), reader.GetString("name"), reader.GetInt32("cor")));
                 }
             }
+            await transaction.CommitAsync();
             return res;
         }
 
-        public enum PaperUpdateMode {
+        public enum UpdateMode {
             All,
             AttrOnly,
-            AuthorOnly,
+            TeacherOnly,
             None
         }
 
         public static async Task<string> VerifiPaperAuthors(PaperRecord paper) {
             using var command = connection.CreateCommand();
+            var transaction = await connection.BeginTransactionAsync();
+            command.Transaction = transaction;
             for (int i = 0; i < paper.authors.Count; i++) {
                 var (id, _, _) = paper.authors[i];
                 command.CommandText =
-                    $"select exists(select teacherID from Teacher where teacherID = {id})";
+                    $"select exists(select teacherID from Teacher where teacherID = '{id}')";
                 using var reader = await command.ExecuteReaderAsync();
                 await reader.ReadAsync();
-                if (reader.GetInt32(0) == 0) return id;
+                if (reader.GetInt32(0) == 0) {
+                    await transaction.CommitAsync();
+                    return "#" + id;
+                }
             }
+            await transaction.CommitAsync();
             return "ok";
         }
 
-        public static async Task<bool> UpdatePaper(PaperRecord paper, PaperUpdateMode mode,
+        public static async Task<bool> UpdatePaper(PaperRecord paper, UpdateMode mode,
             MySqlTransaction? trans = null) {
-            if (mode == PaperUpdateMode.None) return true;
+            if (mode == UpdateMode.None) return true;
             var transaction = trans ?? await connection.BeginTransactionAsync();
             try {
                 using var command = connection.CreateCommand();
                 command.Transaction = transaction;
-                if (mode == PaperUpdateMode.AttrOnly || mode == PaperUpdateMode.All) {
+                if (mode == UpdateMode.AttrOnly || mode == UpdateMode.All) {
                     command.CommandText =
                         $"update Paper set " +
                         $"  paperName = '{paper.name}', " +
@@ -306,7 +316,7 @@ namespace Lab3 {
                         $"where paperID = {paper.id}";
                     await command.ExecuteNonQueryAsync();
                 }
-                if (mode == PaperUpdateMode.AuthorOnly || mode == PaperUpdateMode.All) {
+                if (mode == UpdateMode.TeacherOnly || mode == UpdateMode.All) {
                     command.CommandText = $"delete from Publish where paperID = {paper.id}";
                     await command.ExecuteNonQueryAsync();
                     for (int i = 0; i < paper.authors.Count; i++) {
@@ -343,7 +353,144 @@ namespace Lab3 {
                     $"insert into Paper value ({paper.id}, '{paper.name}', '{paper.source}', " +
                     $"  {paper.year}, {paper.type}, {paper.level})";
                 await command.ExecuteNonQueryAsync();
-                if (!await UpdatePaper(paper, PaperUpdateMode.AuthorOnly, transaction))
+                if (!await UpdatePaper(paper, UpdateMode.TeacherOnly, transaction))
+                    return false;
+            }
+            catch (MySqlException) {
+                await transaction.RollbackAsync();
+                return false;
+            }
+            await transaction.CommitAsync();
+            return true;
+        }
+
+        public static async Task<int> RemoveProject(string id) {
+            using var command = connection.CreateCommand();
+            command.CommandText = "deleteProject";
+            command.CommandType = CommandType.StoredProcedure;
+            var idParam = new MySqlParameter {
+                Value = id,
+                ParameterName = "ID",
+                Direction = ParameterDirection.Input,
+            };
+            var statusParam = new MySqlParameter {
+                ParameterName = "result",
+                Direction = ParameterDirection.Output,
+            };
+            command.Parameters.AddRange(new MySqlParameter[] { idParam, statusParam });
+            await command.ExecuteNonQueryAsync();
+            return (int)(statusParam.Value ?? 1);
+        }
+
+        public static async Task<ProjectRecord> SearchProject(string id) {
+            ProjectRecord res;
+            using var command = connection.CreateCommand();
+            var transaction = await connection.BeginTransactionAsync();
+            command.Transaction = transaction;
+            command.CommandText = $"select projectID as id, projectName as name, projectSource as source, " +
+                                  $"    projectType as type, totalMoney, startYear, endYear " +
+                                  $"from project where projectID = {id}";
+            using (var reader = await command.ExecuteReaderAsync()) {
+                await reader.ReadAsync();
+                res = new ProjectRecord {
+                    id = id,
+                    name = reader.GetString("name"),
+                    source = reader.GetString("source"),
+                    type = reader.GetInt32("type"),
+                    totalMoney = reader.GetFloat("totalMoney"),
+                    startYear = reader.GetInt32("startYear"),
+                    endYear = reader.GetInt32("endYear")
+                };
+            }
+            command.CommandText = $"select undertake.teacherID as teacherID, teacherName as name, money " +
+                                  $"    from undertake, teacher " +
+                                  $"where projectID = {id} and undertake.teacherID = teacher.teacherID " +
+                                  $"order by projectRank";
+            using (var reader = await command.ExecuteReaderAsync()) {
+                while (await reader.ReadAsync()) {
+                    res.teachers.Add((reader.GetString("teacherID"), reader.GetString("name"), reader.GetFloat("money")));
+                }
+            }
+            await transaction.CommitAsync();
+            return res;
+        }
+
+        public static async Task<string> VerifiProjectTeachers(ProjectRecord project) {
+            using var command = connection.CreateCommand();
+            var transaction = await connection.BeginTransactionAsync();
+            command.Transaction = transaction;
+            for (int i = 0; i < project.teachers.Count; i++) {
+                var (id, _, _) = project.teachers[i];
+                command.CommandText =
+                    $"select exists(select teacherID from Teacher where teacherID = '{id}')";
+                using var reader = await command.ExecuteReaderAsync();
+                await reader.ReadAsync();
+                if (reader.GetInt32(0) == 0) {
+                    await transaction.CommitAsync();
+                    return "#" + id;
+                }
+            }
+            await transaction.CommitAsync();
+            return "ok";
+        }
+
+        public static async Task<bool> UpdateProject(ProjectRecord project, UpdateMode mode,
+            MySqlTransaction? trans = null) {
+            if (mode == UpdateMode.None) return true;
+            var transaction = trans ?? await connection.BeginTransactionAsync();
+            try {
+                using var command = connection.CreateCommand();
+                command.Transaction = transaction;
+                if (mode == UpdateMode.AttrOnly || mode == UpdateMode.All) {
+                    command.CommandText =
+                        $"update Project set " +
+                        $"  projectName = '{project.name}', " +
+                        $"  projectSource = '{project.source}', " +
+                        $"  projectType = {project.type}, " +
+                        $"  totalMoney = {project.totalMoney}, " +
+                        $"  startYear = {project.startYear}, " +
+                        $"  endYear = {project.endYear} " +
+                        $"where projectID = {project.id}";
+                    await command.ExecuteNonQueryAsync();
+                }
+                if (mode == UpdateMode.TeacherOnly || mode == UpdateMode.All) {
+                    command.CommandText = $"delete from Undertake where projectID = {project.id}";
+                    await command.ExecuteNonQueryAsync();
+                    for (int i = 0; i < project.teachers.Count; i++) {
+                        var (id, _, money) = project.teachers[i];
+                        command.CommandText =
+                            $"insert into Undertake value ('{id}', '{project.id}', {i + 1}, {money})";
+                        await command.ExecuteNonQueryAsync();
+                    }
+                }
+            }
+            catch (MySqlException) {
+                await transaction.RollbackAsync();
+                return false;
+            }
+            if (trans is null) await transaction.CommitAsync();
+            return true;
+        }
+
+        public static async Task<bool> CheckExistsOfProjectID(string id) {
+            using var command = connection.CreateCommand();
+            command.CommandText =
+                $"select exists(select projectID from Project where projectID = '{id}')";
+            using var reader = await command.ExecuteReaderAsync();
+            await reader.ReadAsync();
+            return reader.GetInt32(0) != 0;
+        }
+
+        public static async Task<bool> AddProject(ProjectRecord project) {
+            var transaction = await connection.BeginTransactionAsync();
+            try {
+                using var command = connection.CreateCommand();
+                command.Transaction = transaction;
+                command.CommandText =
+                    $"insert into Project value ('{project.id}', '{project.name}', '{project.source}', " +
+                    $"  {project.type}, {project.totalMoney}, {project.startYear}, {project.endYear})";
+                await command.ExecuteNonQueryAsync();
+                if (!await UpdateProject(project, UpdateMode.TeacherOnly, transaction))
                     return false;
             }
             catch (MySqlException) {

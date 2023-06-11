@@ -1,4 +1,5 @@
 ﻿using MaterialDesignThemes.Wpf;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -77,6 +78,52 @@ namespace Lab3 {
                 else authors.Add(id);
             }
             return 0;
+        }
+
+        public static void UpdateProjectView() {
+            Global.ownProject.Clear();
+            Global.partedProject.Clear();
+            foreach (var project in Global.userProject) {
+                if (project.排名 == 1)
+                    Global.ownProject.Add(project);
+                else Global.partedProject.Add(project);
+            }
+        }
+
+        public static bool CompareTeacherList(ProjectRecord a, ProjectRecord b) {
+            if (a.teachers.Count != b.teachers.Count) return false;
+            for (int i = 0; i < a.teachers.Count; i++) {
+                if (a.teachers[i].id != b.teachers[i].id
+                    || a.teachers[i].money != b.teachers[i].money) return false;
+            }
+            return true;
+        }
+
+        public static bool CompareProjectAttr(ProjectRecord a, ProjectRecord b) {
+            if (a.id != b.id) return false;
+            if (a.name != b.name) return false;
+            if (a.source != b.source) return false;
+            if (a.type != b.type) return false;
+            if (a.totalMoney != b.totalMoney) return false;
+            if (a.startYear != b.startYear) return false;
+            if (a.endYear != b.endYear) return false;
+            return true;
+        }
+
+        public static bool CompareProjectRecord(ProjectRecord a, ProjectRecord b) {
+            return CompareProjectAttr(a, b) && CompareTeacherList(a, b);
+        }
+
+        public static int VerifyProjectTeachers(ProjectRecord record) {
+            float total = 0;
+            ISet<string> authors = new HashSet<string>();
+            foreach (var (id, _, money) in record.teachers) {
+                if (id.Length != 5) return 1;
+                if (authors.Contains(id)) return 3;
+                else authors.Add(id);
+                total += money;
+            }
+            return Math.Abs(record.totalMoney - total) < 0.01 ? 0 : 2;
         }
     }
 }

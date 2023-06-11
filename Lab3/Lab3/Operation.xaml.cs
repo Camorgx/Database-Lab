@@ -65,9 +65,16 @@ namespace Lab3 {
             partedPaper.ItemsSource = Global.partedPaper;
         }
 
+        private void InitProject() {
+            Utils.UpdateProjectView();
+            ownProject.ItemsSource = Global.ownProject;
+            partedProject.ItemsSource = Global.partedProject;
+        }
+
         private void WindowLoaded(object sender, RoutedEventArgs e) {
             InitMyInfo();
             InitPaper();
+            InitProject();
         }
 
         private static readonly string dialogIdentifier = "OperationDialog";
@@ -198,9 +205,9 @@ namespace Lab3 {
             window.Show();
             bool authoreCmp = Utils.CompareAuthorList(currentRecord, Global.newPaper);
             bool attrCmp = Utils.ComparePaperAttr(currentRecord, Global.newPaper);
-            Database.PaperUpdateMode mode = attrCmp ?
-                (authoreCmp ? Database.PaperUpdateMode.None : Database.PaperUpdateMode.AuthorOnly) :
-                (authoreCmp ? Database.PaperUpdateMode.AttrOnly : Database.PaperUpdateMode.All);
+            Database.UpdateMode mode = attrCmp ?
+                (authoreCmp ? Database.UpdateMode.None : Database.UpdateMode.TeacherOnly) :
+                (authoreCmp ? Database.UpdateMode.AttrOnly : Database.UpdateMode.All);
             bool res = await Database.UpdatePaper(Global.newPaper, mode);
             window.Close();
             if (res) {
@@ -212,7 +219,7 @@ namespace Lab3 {
 
         private async void NewPaperButtonClick(object sender, RoutedEventArgs e) {
             var showPaper = new ShowPaper {
-                Message = { Content = "申报论文信息" },
+                Message = { Content = "申报论文" },
                 CheckPaperID = true,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Owner = this
@@ -237,6 +244,119 @@ namespace Lab3 {
                 RefreshPaperButtonClick(sender, e);
             }
             else await Utils.MessageTips("论文添加失败。", dialogIdentifier);
+        }
+
+        private async void RemoveProject(object sender, RoutedEventArgs e) {
+            if (ownProject.SelectedItem is not Project project) return;
+            if (!await Utils.VerificationDialog($"将删除项目号: {project.项目号}，不可恢复，是否确定？",
+                dialogIdentifier)) return;
+            var window = new PleaseWait() {
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            };
+            window.Show();
+            var id = project.项目号;
+            int res = await Database.RemoveProject(id);
+            await RefreshProject();
+            window.Close();
+            if (res == 0) await Utils.MessageTips("所选项目已删除。", dialogIdentifier);
+            else if (res == 1) await Utils.MessageTips("数据库错误。", dialogIdentifier);
+            else await Utils.MessageTips("未知错误。", dialogIdentifier);
+        }
+
+        private async Task<bool> RefreshProject() {
+            await Database.LoadProjectData(Global.teacher.ID);
+            Utils.UpdateProjectView();
+            ownProject.Items.Refresh();
+            partedProject.Items.Refresh();
+            return true;
+        }
+
+        private async void RefreshProjectButtonClick(object sender, RoutedEventArgs e) {
+            var refresh = RefreshProject();
+            var window = new PleaseWait() {
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            };
+            window.Show();
+            await refresh;
+            window.Close();
+        }
+
+        public bool verifyToModifyProject = false;
+        public bool projectCreateWindowOpen = false;
+
+        private async void ModifyProjectButtonClick(object sender, RoutedEventArgs e) {
+            verifyToModifyProject = false;
+            if (ownProject.SelectedItem is not Project project) return;
+            var window = new PleaseWait() {
+                WindowStartupLocation = WindowStartupLocation.Manual,
+                Left = Left + Width / 2.5,
+                Top = Top + Height / 2.5,
+            };
+            window.Show();
+            var record = Database.SearchProject(project.项目号);
+            var currentRecord = await record;
+            var showProject = new ShowProject {
+                Message = { Content = "修改项目信息" },
+                view = {
+                    Record = currentRecord,
+                    projectID = { IsEnabled = false },
+                },
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Owner = this
+            };
+            showProject.Show();
+            window.Hide();
+            await Task.Run(() => {
+                while (projectCreateWindowOpen) ;
+            });
+            Activate();
+            if (!verifyToModifyProject) {
+                window.Close();
+                return;
+            }
+            verifyToModifyProject = true;
+            window.Show();
+            bool authoreCmp = Utils.CompareTeacherList(currentRecord, Global.newProject);
+            bool attrCmp = Utils.CompareProjectAttr(currentRecord, Global.newProject);
+            Database.UpdateMode mode = attrCmp ?
+                (authoreCmp ? Database.UpdateMode.None : Database.UpdateMode.TeacherOnly) :
+                (authoreCmp ? Database.UpdateMode.AttrOnly : Database.UpdateMode.All);
+            bool res = await Database.UpdateProject(Global.newProject, mode);
+            window.Close();
+            if (res) {
+                await Utils.MessageTips("项目信息更新完成。", dialogIdentifier);
+                RefreshProjectButtonClick(sender, e);
+            }
+            else await Utils.MessageTips($"项目信息更新失败。", dialogIdentifier);
+        }
+
+        private async void NewProjectButtonClick(object sender, RoutedEventArgs e) {
+            var showProject = new ShowProject {
+                Message = { Content = "申报项目" },
+                CheckProjectID = true,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Owner = this
+            };
+            verifyToModifyProject = false;
+            showProject.Show();
+            await Task.Run(() => {
+                while (projectCreateWindowOpen) ;
+            });
+            Activate();
+            if (!verifyToModifyProject) return;
+            var window = new PleaseWait() {
+                WindowStartupLocation = WindowStartupLocation.Manual,
+                Left = Left + Width / 2.5,
+                Top = Top + Height / 2.5,
+            };
+            window.Show();
+            bool res = await Database.AddProject(Global.newProject);
+            window.Close();
+            if (res) {
+                await Utils.MessageTips("项目添加成功。", dialogIdentifier);
+                RefreshProjectButtonClick(sender, e);
+            }
+            else await Utils.MessageTips("项目添加失败。", dialogIdentifier);
         }
     }
 }

@@ -37,11 +37,11 @@ namespace Lab3 {
             int res = Utils.VerifyReaderAuthors(Global.newPaper);
             if (res == 1) await Utils.MessageTips("作者工号的格式不正确。", dialogVerifier);
             else if (res == 2) await Utils.MessageTips("一篇论文只能有一个通讯作者。", dialogVerifier);
-            else if (res == 3) await Utils.MessageTips("用户的排名应唯一。", dialogVerifier);
+            else if (res == 3) await Utils.MessageTips("作者的排名应唯一。", dialogVerifier);
             else {
                 var verRes = await Database.VerifiPaperAuthors(Global.newPaper);
                 if (verRes != "ok")
-                    await Utils.MessageTips($"工号{verRes}不存在。", dialogVerifier);
+                    await Utils.MessageTips($"工号{verRes[1..]}不存在。", dialogVerifier);
                 else {
                     ((Operation)Owner).verifyToModifyPaper = true;
                     Close();
@@ -54,6 +54,7 @@ namespace Lab3 {
         }
 
         private void WindowLoaded(object sender, RoutedEventArgs e) {
+            Title = Message.Content.ToString();
             ((Operation)Owner).paperCreateWindowOpen = true;
         }
 

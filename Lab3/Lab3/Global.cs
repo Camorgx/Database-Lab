@@ -13,15 +13,15 @@ namespace Lab3 {
     }
 
     class Project {
-        public string ID { get; set; } = "";
-        public string Name { get; set; } = "";
-        public string Source { get; set; } = "";
-        public string Type { get; set; } = "";
-        public float TotalMoney { get; set; } = 0;
-        public int StartYear { get; set; } = 2010;
-        public int EndYear { get; set; } = 2020;
-        public int Rank { get; set; } = 1;
-        public float Money { get; set; } = 0;
+        public string 项目号 { get; set; } = "";
+        public string 项目名称 { get; set; } = "";
+        public string 项目来源 { get; set; } = "";
+        public string 项目类型 { get; set; } = "";
+        public float 总经费 { get; set; } = 0;
+        public int 开始年份 { get; set; } = 2010;
+        public int 结束年份 { get; set; } = 2020;
+        public int 排名 { get; set; } = 1;
+        public float 承担金额 { get; set; } = 0;
     }
 
     class Lesson {
@@ -51,6 +51,17 @@ namespace Lab3 {
         public List<(string id, string name, int cor)> authors = new();
     }
 
+    public class ProjectRecord {
+        public string id = "";
+        public string name = "";
+        public string source = "";
+        public int type = 0;
+        public float totalMoney;
+        public int startYear = 2010;
+        public int endYear = 2020;
+        public List<(string id, string name, float money)> teachers = new();
+    }
+
     static class Global {
         public static Teacher teacher = new();
         public static List<Paper> userPaper = new();
@@ -58,7 +69,10 @@ namespace Lab3 {
         public static List<Lesson> userLesson = new();
         public static List<Paper> ownPaper = new();
         public static List<Paper> partedPaper = new();
+        public static List<Project> ownProject = new();
+        public static List<Project> partedProject = new();
 
         public static PaperRecord newPaper = new();
+        public static ProjectRecord newProject = new();
     }
 }
