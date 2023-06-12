@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace Lab3 {
     /// <summary>
@@ -71,6 +72,13 @@ namespace Lab3 {
                 if (id.Length != 0) res.teachers.Add((id, "", money));
             }
             return res;
+        }
+
+        private void DataGridPreviewMouseWheel(object sender, MouseWheelEventArgs e) {
+            teachers.RaiseEvent(new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta) {
+                RoutedEvent = MouseWheelEvent,
+                Source = sender
+            });
         }
     }
 }

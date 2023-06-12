@@ -90,7 +90,7 @@
                       VerticalScrollBarVisibility="Auto" MaxHeight="300" MinWidth="400">
             <DataGrid CanUserAddRows="True" x:Name="authors" IsReadOnly="False" MinColumnWidth="200"
                       AutoGenerateColumns="True" x:FieldModifier="public" MinHeight="300" MinWidth="400"
-                      SelectionMode="Single" SelectionUnit="Cell">
+                      SelectionMode="Single" SelectionUnit="Cell" PreviewMouseWheel="DataGridPreviewMouseWheel">
             </DataGrid>
         </ScrollViewer>
     </StackPanel>

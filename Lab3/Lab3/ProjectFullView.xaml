@@ -92,7 +92,7 @@
         </Grid>
         <ScrollViewer HorizontalAlignment="Center" VerticalAlignment="Center" materialDesign:ScrollBarAssist.ButtonsVisibility="Visible"
                       VerticalScrollBarVisibility="Auto" MaxHeight="300" MinWidth="500">
-            <DataGrid CanUserAddRows="True" x:Name="teachers" IsReadOnly="False" MinColumnWidth="200"
+            <DataGrid CanUserAddRows="True" x:Name="teachers" IsReadOnly="False" MinColumnWidth="200" PreviewMouseWheel="DataGridPreviewMouseWheel"
                       AutoGenerateColumns="True" x:FieldModifier="public" MinHeight="300" MinWidth="400"
                       SelectionMode="Single" SelectionUnit="Cell">
             </DataGrid>

@@ -131,5 +131,12 @@ namespace Lab3 {
                 Owner?.Activate();
             }
         }
+
+        private void SearchResultPreviewMouseWheel(object sender, MouseWheelEventArgs e) {
+            searchResult.RaiseEvent(new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta) {
+                RoutedEvent = MouseWheelEvent,
+                Source = sender
+            });
+        }
     }
 }
