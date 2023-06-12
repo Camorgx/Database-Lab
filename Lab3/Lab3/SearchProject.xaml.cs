@@ -54,8 +54,8 @@ namespace Lab3 {
             if (projectSource.Text.Length > 0) arguments.Add($"projectSource = '{projectSource.Text}'");
             if (this.startYear.Text.Length > 0) arguments.Add($"projectYear >= {startYear}");
             if (this.endYear.Text.Length > 0) arguments.Add($"projectYear <= {endYear}");
-            if (projectType.SelectedIndex > 0) arguments.Add($"totalMoney >= {startMoney} and totalMoney <= {endMoney}");
-            if (totalMoney.Text.Length > 0) arguments.Add($"");
+            if (projectType.SelectedIndex > 0) arguments.Add($"projectType = {projectType.SelectedIndex}");
+            if (totalMoney.Text.Length > 0) arguments.Add($"totalMoney >= {startMoney} and totalMoney <= {endMoney}");
             if (arguments.Count == 0) return initString;
             var sb = new StringBuilder(initString + "where ");
             for (int i = 0; i < arguments.Count; i++) {

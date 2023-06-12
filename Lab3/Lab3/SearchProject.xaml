@@ -94,7 +94,7 @@
             </StackPanel>
             <StackPanel Grid.Row="1" Grid.Column="3">
                 <StackPanel Orientation="Horizontal">
-                    <materialDesign:PackIcon VerticalAlignment="Bottom" Kind="Identifier" Foreground="#707070"/>
+                    <materialDesign:PackIcon VerticalAlignment="Bottom" Kind="Money" Foreground="#707070"/>
                     <TextBox materialDesign:HintAssist.Hint="总经费范围"
                          VerticalAlignment="Top" HorizontalAlignment="Center"
                          x:Name="totalMoney" Width="100" x:FieldModifier="public"

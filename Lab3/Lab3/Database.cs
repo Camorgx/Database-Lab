@@ -681,5 +681,22 @@ namespace Lab3 {
             await transaction.CommitAsync();
             return res;
         }
+
+        public static async Task<Dictionary<string, LessonRecord>> SearchLessonWithRequirement(string reqString) {
+            var transaction = await connection.BeginTransactionAsync();
+            using var command = connection.CreateCommand();
+            command.CommandText = reqString;
+            command.Transaction = transaction;
+            var reader = await command.ExecuteReaderAsync();
+            Dictionary<string, LessonRecord> res = new();
+            IList<string> ids = new List<string>();
+            while (await reader.ReadAsync())
+                ids.Add(reader.GetString(0));
+            await reader.DisposeAsync();
+            foreach (string id in ids)
+                res[id] = await SearchLesson(id, transaction);
+            await transaction.CommitAsync();
+            return res;
+        }
     }
 }

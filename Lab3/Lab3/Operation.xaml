@@ -363,6 +363,68 @@
                         <TextBlock HorizontalAlignment="Center" Text="统计" />
                     </StackPanel>
                 </TabItem.Header>
+                <ScrollViewer VerticalScrollBarVisibility="Auto" VerticalAlignment="Top" MaxHeight="800">
+                    <StackPanel Margin="0, 50, 50, 50">
+                        <Label Content="教学科研信息统计" Margin="70,0" FontFamily="Segoe UI Black" FontSize="30"/>
+                        <Grid VerticalAlignment="Center" HorizontalAlignment="Left" Height="50">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="70"></ColumnDefinition>
+                                <ColumnDefinition Width="160"></ColumnDefinition>
+                                <ColumnDefinition Width="20"></ColumnDefinition>
+                                <ColumnDefinition Width="160"></ColumnDefinition>
+                                <ColumnDefinition Width="50"></ColumnDefinition>
+                                <ColumnDefinition Width="100"></ColumnDefinition>
+                                <ColumnDefinition Width="50"></ColumnDefinition>
+                                <ColumnDefinition Width="100"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="1">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon VerticalAlignment="Bottom" Kind="DateRange" Foreground="#707070"/>
+                                    <TextBox materialDesign:HintAssist.Hint="起始年份" PreviewTextInput="InputNumberOnly"
+                                             VerticalAlignment="Top" HorizontalAlignment="Center" InputMethod.IsInputMethodEnabled="False"
+                                             x:Name="startYear" Width="180" x:FieldModifier="public" FontSize="15"
+                                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                                </StackPanel>
+                            </StackPanel>
+                            <StackPanel Grid.Column="3">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon VerticalAlignment="Bottom" Kind="DateRange" Foreground="#707070"/>
+                                    <TextBox materialDesign:HintAssist.Hint="结束年份" PreviewTextInput="InputNumberOnly"
+                                             VerticalAlignment="Top" HorizontalAlignment="Center" InputMethod.IsInputMethodEnabled="False"
+                                             x:Name="endYear" Width="180" x:FieldModifier="public" FontSize="15"
+                                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                                </StackPanel>
+                            </StackPanel>
+                            <Button VerticalAlignment="Center" HorizontalAlignment="Center" Content="统计" 
+                                    FontFamily="Segoe UI Black" FontSize="18" Width="100" Height="40" Click="TotalButtonClick"
+                                    Grid.Column="5" Background="#FF307CD6" BorderBrush="#FF307CD6"/>
+                            <Button VerticalAlignment="Center" HorizontalAlignment="Center" Content="导出" 
+                                    FontFamily="Segoe UI Black" FontSize="18" Width="100" Height="40" Click="ExportButtonClick"
+                                    Grid.Column="7" Background="#FF307CD6" BorderBrush="#FF307CD6"/>
+                        </Grid>
+                        <StackPanel Margin="0, 50, 50, 0" Visibility="Hidden" x:Name="lessonPanel">
+                            <Label Content="教学情况" Margin="70,0" FontFamily="Segoe UI Black" FontSize="25"/>
+                            <DataGrid CanUserAddRows="False" x:Name="totalLesson" IsReadOnly="True"
+                                      AutoGenerateColumns="True" IsHitTestVisible="False"
+                                      SelectionMode="Single" SelectionUnit="FullRow">
+                            </DataGrid>
+                        </StackPanel>
+                        <StackPanel Margin="0, 0, 50, 0" Visibility="Hidden" x:Name="paperPanel">
+                            <Label Content="发表论文情况" Margin="70,0" FontFamily="Segoe UI Black" FontSize="25"/>
+                            <DataGrid CanUserAddRows="False" x:Name="totalPaper" IsReadOnly="True"
+                                      AutoGenerateColumns="True" IsHitTestVisible="False"
+                                      SelectionMode="Single" SelectionUnit="FullRow">
+                            </DataGrid>
+                        </StackPanel>
+                        <StackPanel Margin="0, 0, 50, 0" Visibility="Hidden" x:Name="projectPanel">
+                            <Label Content="承担项目情况" Margin="70,0" FontFamily="Segoe UI Black" FontSize="25"/>
+                            <DataGrid CanUserAddRows="False" x:Name="totalProject" IsReadOnly="True"
+                                      AutoGenerateColumns="True" IsHitTestVisible="False"
+                                      SelectionMode="Single" SelectionUnit="FullRow">
+                            </DataGrid>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
             </TabItem>
         </TabControl>
         <materialDesign:DialogHost Identifier="OperationDialog" HorizontalAlignment="Center" VerticalAlignment="Center">

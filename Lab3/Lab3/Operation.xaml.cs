@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Text.RegularExpressions;
 
 namespace Lab3 {
     /// <summary>
@@ -36,6 +37,10 @@ namespace Lab3 {
 
         private void MoveWindowMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
             DragMove();
+        }
+
+        private void InputNumberOnly(object sender, TextCompositionEventArgs e) {
+            e.Handled = new Regex("[^0-9]+").IsMatch(e.Text);
         }
 
         private void MaximizeWindowClick(object sender, RoutedEventArgs e) {
@@ -80,6 +85,7 @@ namespace Lab3 {
             searchPaper.Owner = this;
             searchTeacher.Owner = this;
             searchProject.Owner = this;
+            searchLesson.Owner = this;
         }
 
         private void WindowLoaded(object sender, RoutedEventArgs e) {
@@ -491,6 +497,14 @@ namespace Lab3 {
 
         private void OwnLessonMouseDoubleClick(object sender, MouseButtonEventArgs e) {
             ModifyLessonButtonClick(sender, e);
+        }
+
+        private void TotalButtonClick(object sender, RoutedEventArgs e) {
+
+        }
+
+        private void ExportButtonClick(object sender, RoutedEventArgs e) {
+
         }
     }
 }
