@@ -3,6 +3,7 @@ using System;
 using System.Windows;
 using System.Windows.Input;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace Lab3 {
     /// <summary>
@@ -75,11 +76,16 @@ namespace Lab3 {
             userLesson.ItemsSource = Global.userLesson;
         }
 
+        private void InitSearch() {
+            searchPaper.Owner = this;
+        }
+
         private void WindowLoaded(object sender, RoutedEventArgs e) {
             InitMyInfo();
             InitPaper();
             InitProject();
             InitLesson();
+            InitSearch();
         }
 
         private static readonly string dialogIdentifier = "OperationDialog";
@@ -196,11 +202,8 @@ namespace Lab3 {
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Owner = this
             };
-            showPaper.Show();
             window.Hide();
-            await Task.Run(() => {
-                while (paperCreateWindowOpen) ;
-            });
+            showPaper.ShowDialog();
             Activate();
             if (!verifyToModifyPaper) {
                 window.Close();
@@ -230,16 +233,12 @@ namespace Lab3 {
                 Owner = this
             };
             verifyToModifyPaper = false;
-            showPaper.Show();
-            await Task.Run(() => {
-                while (paperCreateWindowOpen) ;
-            }); 
+            showPaper.ShowDialog();
             Activate();
             if (!verifyToModifyPaper) return;
             var window = new PleaseWait() {
-                WindowStartupLocation = WindowStartupLocation.Manual,
-                Left = Left + Width / 2.5,
-                Top = Top + Height / 2.5,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Owner = this
             };
             window.Show();
             bool res = await Database.AddPaper(Global.newPaper);
@@ -309,11 +308,8 @@ namespace Lab3 {
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Owner = this
             };
-            showProject.Show();
             window.Hide();
-            await Task.Run(() => {
-                while (projectCreateWindowOpen) ;
-            });
+            showProject.ShowDialog();
             Activate();
             if (!verifyToModifyProject) {
                 window.Close();
@@ -343,10 +339,7 @@ namespace Lab3 {
                 Owner = this
             };
             verifyToModifyProject = false;
-            showProject.Show();
-            await Task.Run(() => {
-                while (projectCreateWindowOpen) ;
-            });
+            showProject.ShowDialog();
             Activate();
             if (!verifyToModifyProject) return;
             var window = new PleaseWait() {
@@ -420,11 +413,8 @@ namespace Lab3 {
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Owner = this
             };
-            showLesson.Show();
             window.Hide();
-            await Task.Run(() => {
-                while (lessonCreateWindowOpen) ;
-            });
+            showLesson.ShowDialog();
             Activate();
             if (!verifyToModifyLesson) {
                 window.Close();
@@ -454,10 +444,7 @@ namespace Lab3 {
                 Owner = this
             };
             verifyToModifyLesson = false;
-            showLesson.Show();
-            await Task.Run(() => {
-                while (lessonCreateWindowOpen) ;
-            });
+            showLesson.ShowDialog();
             Activate();
             if (!verifyToModifyLesson) return;
             var window = new PleaseWait() {
@@ -475,11 +462,13 @@ namespace Lab3 {
             else await Utils.MessageTips("课程添加失败。", dialogIdentifier);
         }
 
-        private void searchTypeSelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e) {
-            string[][] keywordTypes = {
-                new string[] {"请选择", "工号", "姓名"},
-                new string[] { "请选择", "序号", "论文名称", "论文来源", }
-            };
+        private void searchTypeSelectionChanged(object sender, SelectionChangedEventArgs e) {
+            UserControl[] controls = { searchTeacher, searchPaper };
+            for (int i = 0; i < controls.Length; ++i) {
+                if (controls[i] is not null)
+                    controls[i].Visibility = (i == searchType.SelectedIndex - 1) ? 
+                        Visibility.Visible : Visibility.Hidden;
+            }
         }
     }
 }

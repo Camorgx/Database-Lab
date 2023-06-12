@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.Data;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Lab3 {
     static class Database {
@@ -239,10 +240,10 @@ namespace Lab3 {
             return (int)(statusParam.Value ?? 1);
         }
 
-        public static async Task<PaperRecord> SearchPaper(int id) {
+        public static async Task<PaperRecord> SearchPaper(int id, MySqlTransaction? trans = null) {
             PaperRecord res;
             using var command = connection.CreateCommand();
-            var transaction = await connection.BeginTransactionAsync();
+            var transaction = trans ?? await connection.BeginTransactionAsync();
             command.Transaction = transaction;
             command.CommandText = $"select paperID as id, paperName as name, paperSource as source, " +
                                   $"    paperYear as year, paperType as type, level " +
@@ -267,7 +268,7 @@ namespace Lab3 {
                     res.authors.Add((reader.GetString("teacherID"), reader.GetString("name"), reader.GetInt32("cor")));
                 }
             }
-            await transaction.CommitAsync();
+            if (trans is null) await transaction.CommitAsync();
             return res;
         }
 
@@ -381,10 +382,10 @@ namespace Lab3 {
             return (int)(statusParam.Value ?? 1);
         }
 
-        public static async Task<ProjectRecord> SearchProject(string id) {
+        public static async Task<ProjectRecord> SearchProject(string id, MySqlTransaction? trans = null) {
             ProjectRecord res;
             using var command = connection.CreateCommand();
-            var transaction = await connection.BeginTransactionAsync();
+            var transaction = trans ?? await connection.BeginTransactionAsync();
             command.Transaction = transaction;
             command.CommandText = $"select projectID as id, projectName as name, projectSource as source, " +
                                   $"    projectType as type, totalMoney, startYear, endYear " +
@@ -410,7 +411,7 @@ namespace Lab3 {
                     res.teachers.Add((reader.GetString("teacherID"), reader.GetString("name"), reader.GetFloat("money")));
                 }
             }
-            await transaction.CommitAsync();
+            if (trans is null) await transaction.CommitAsync();
             return res;
         }
 
@@ -518,10 +519,10 @@ namespace Lab3 {
             return (int)(statusParam.Value ?? 1);
         }
 
-        public static async Task<LessonRecord> SearchLesson(string id) {
+        public static async Task<LessonRecord> SearchLesson(string id, MySqlTransaction? trans = null) {
             LessonRecord res;
             using var command = connection.CreateCommand();
-            var transaction = await connection.BeginTransactionAsync();
+            var transaction = trans ?? await connection.BeginTransactionAsync();
             command.Transaction = transaction;
             command.CommandText = $"select lessonID as id, lessonName as name, lessonHour as hour, " +
                                   $"    lessonType as type " +
@@ -545,7 +546,7 @@ namespace Lab3 {
                         reader.GetInt32("year"), reader.GetInt32("term"), reader.GetInt32("hour")));
                 }
             }
-            await transaction.CommitAsync();
+            if (trans is null) await transaction.CommitAsync();
             return res;
         }
 
@@ -629,6 +630,23 @@ namespace Lab3 {
             }
             await transaction.CommitAsync();
             return true;
+        }
+
+        public static async Task<Dictionary<int, PaperRecord>> SearchPaperWithRequirement(string reqString) {
+            var transaction = await connection.BeginTransactionAsync();
+            using var command = connection.CreateCommand();
+            command.CommandText = reqString;
+            command.Transaction = transaction;
+            var reader = await command.ExecuteReaderAsync();
+            Dictionary<int, PaperRecord> res = new();
+            IList<int> ids = new List<int>();
+            while (await reader.ReadAsync()) 
+                ids.Add(reader.GetInt32(0));
+            await reader.DisposeAsync();
+            foreach (int id in ids)
+                res[id] = await SearchPaper(id, transaction);
+            await transaction.CommitAsync();
+            return res;
         }
     }
 }

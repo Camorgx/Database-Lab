@@ -345,6 +345,10 @@
                                 </ComboBox>
                             </StackPanel>
                         </Grid>
+                        <Grid>
+                            <local:SearchPaper x:Name="searchPaper" Visibility="Hidden"/>
+                            <local:SearchTeacher x:Name="searchTeacher" Visibility="Hidden"/>
+                        </Grid>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>

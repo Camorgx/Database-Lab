@@ -16,6 +16,21 @@ namespace Lab3 {
             public YesOrNo 是否为通讯作者 { get; set; } = YesOrNo.否;
         }
 
+        private bool isReadOnly = false;
+        public bool IsReadOnly {
+            get { return isReadOnly; }
+            set {
+                isReadOnly = value;
+                paperID.IsReadOnly = value;
+                paperName.IsReadOnly = value;
+                paperSouce.IsReadOnly = value;
+                paperType.IsEnabled = !value;
+                paperYear.IsReadOnly = value;
+                paperLevel.IsEnabled = !value;
+                authors.IsReadOnly = value;
+            }
+        }
+
         public PaperRecord Record { get; set; } = new();
 
         public List<Pair> Authors { get; set; } = new();
