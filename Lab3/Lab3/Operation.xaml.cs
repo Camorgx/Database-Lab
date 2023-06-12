@@ -88,21 +88,27 @@ namespace Lab3 {
             searchLesson.Owner = this;
         }
 
+        private void InitTotal() {
+            totalLesson.ItemsSource = Global.totalLesson;
+            totalPaper.ItemsSource = Global.totalPaper;
+            totalProject.ItemsSource = Global.totalProject;
+        }
+
         private void WindowLoaded(object sender, RoutedEventArgs e) {
             InitMyInfo();
             InitPaper();
             InitProject();
             InitLesson();
             InitSearch();
+            InitTotal();
         }
 
         private static readonly string dialogIdentifier = "OperationDialog";
 
         private async void UpdateButtonClick(object sender, RoutedEventArgs e) {
-            var window = new PleaseWait() {
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
-            };
+            var window = new PleaseWait() { Owner = this };
             window.Show();
+            window.Activate();
             var newName = name.Text;
             var newGender = gender.SelectedIndex;
             if (newGender == 0) {
@@ -117,6 +123,7 @@ namespace Lab3 {
             var update = Database.UpdateTeacherData(teacherID.Text, newName, newGender, newTitle);
             var res = await update;
             window.Close();
+            Activate();
             if (res) {
                 Global.teacher.Name = newName;
                 Global.teacher.Gender = newGender;
@@ -127,10 +134,9 @@ namespace Lab3 {
         }
 
         private async void ResetPasswordButtonClick(object sender, RoutedEventArgs e) {
-            var window = new PleaseWait() {
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
-            };
+            var window = new PleaseWait() { Owner = this };
             window.Show();
+            window.Activate();
             var id = Global.teacher.ID;
             var oldPwd = oldPassword.Password;
             var newPwd = newPassword.Password;
@@ -149,6 +155,7 @@ namespace Lab3 {
             }
             int res = await Database.UpdatePassword(id, oldPwd, newPwd);
             window.Close();
+            Activate();
             if (res == 0) {
                 await Utils.MessageTips("密码更改成功，请重新登录系统。", dialogIdentifier);
                 logOut = true;
@@ -164,14 +171,14 @@ namespace Lab3 {
             if (ownPaper.SelectedItem is not Paper paper) return;
             if (!await Utils.VerificationDialog($"将删除论文序号: {paper.序号}，不可恢复，是否确定？", 
                 dialogIdentifier)) return;
-            var window = new PleaseWait() {
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
-            };
+            var window = new PleaseWait() { Owner = this };
             window.Show();
+            window.Activate();
             var id = paper.序号;
             int res = await Database.RemovePaper(id);
             await RefreshPaper();
             window.Close();
+            Activate();
             if (res == 0) await Utils.MessageTips("所选论文已删除。", dialogIdentifier);
             else if (res == 1) await Utils.MessageTips("数据库错误。", dialogIdentifier); 
             else await Utils.MessageTips("未知错误。", dialogIdentifier);
@@ -187,12 +194,12 @@ namespace Lab3 {
 
         private async void RefreshPaperButtonClick(object sender, RoutedEventArgs e) {
             var refresh = RefreshPaper();
-            var window = new PleaseWait() {
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
-            };
+            var window = new PleaseWait() { Owner = this };
             window.Show();
+            window.Activate();
             await refresh;
             window.Close();
+            Activate();
         }
 
         public bool verifyToModifyPaper = false;
@@ -201,12 +208,9 @@ namespace Lab3 {
         private async void ModifyPaperButtonClick(object sender, RoutedEventArgs e) {
             verifyToModifyPaper = false;
             if (ownPaper.SelectedItem is not Paper paper) return;
-            var window = new PleaseWait() {
-                WindowStartupLocation = WindowStartupLocation.Manual,
-                Left = Left + Width / 2.5,
-                Top = Top + Height / 2.5,
-            };
+            var window = new PleaseWait() { Owner = this };
             window.Show();
+            window.Activate();
             var record = Database.SearchPaper(paper.序号);
             var currentRecord = await record;
             var showPaper = new ShowPaper {
@@ -223,10 +227,12 @@ namespace Lab3 {
             Activate();
             if (!verifyToModifyPaper) {
                 window.Close();
+                Activate();
                 return;
             }
             verifyToModifyPaper = true;
             window.Show();
+            window.Activate();
             bool authoreCmp = Utils.CompareAuthorList(currentRecord, Global.newPaper);
             bool attrCmp = Utils.ComparePaperAttr(currentRecord, Global.newPaper);
             Database.UpdateMode mode = attrCmp ?
@@ -234,6 +240,7 @@ namespace Lab3 {
                 (authoreCmp ? Database.UpdateMode.AttrOnly : Database.UpdateMode.All);
             bool res = await Database.UpdatePaper(Global.newPaper, mode);
             window.Close();
+            Activate();
             if (res) {
                 await Utils.MessageTips("论文信息更新完成。", dialogIdentifier);
                 RefreshPaperButtonClick(sender, e);
@@ -252,13 +259,12 @@ namespace Lab3 {
             showPaper.ShowDialog();
             Activate();
             if (!verifyToModifyPaper) return;
-            var window = new PleaseWait() {
-                WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                Owner = this
-            };
+            var window = new PleaseWait() { Owner = this };
             window.Show();
+            window.Activate();
             bool res = await Database.AddPaper(Global.newPaper);
             window.Close();
+            Activate();
             if (res) {
                 await Utils.MessageTips("论文添加成功。", dialogIdentifier);
                 RefreshPaperButtonClick(sender, e);
@@ -270,14 +276,14 @@ namespace Lab3 {
             if (ownProject.SelectedItem is not Project project) return;
             if (!await Utils.VerificationDialog($"将删除项目号: {project.项目号}，不可恢复，是否确定？",
                 dialogIdentifier)) return;
-            var window = new PleaseWait() {
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
-            };
+            var window = new PleaseWait() { Owner = this };
             window.Show();
+            window.Activate();
             var id = project.项目号;
             int res = await Database.RemoveProject(id);
             await RefreshProject();
             window.Close();
+            Activate();
             if (res == 0) await Utils.MessageTips("所选项目已删除。", dialogIdentifier);
             else if (res == 1) await Utils.MessageTips("数据库错误。", dialogIdentifier);
             else await Utils.MessageTips("未知错误。", dialogIdentifier);
@@ -293,12 +299,12 @@ namespace Lab3 {
 
         private async void RefreshProjectButtonClick(object sender, RoutedEventArgs e) {
             var refresh = RefreshProject();
-            var window = new PleaseWait() {
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
-            };
+            var window = new PleaseWait() { Owner = this };
             window.Show();
+            window.Activate();
             await refresh;
             window.Close();
+            Activate();
         }
 
         public bool verifyToModifyProject = false;
@@ -307,12 +313,9 @@ namespace Lab3 {
         private async void ModifyProjectButtonClick(object sender, RoutedEventArgs e) {
             verifyToModifyProject = false;
             if (ownProject.SelectedItem is not Project project) return;
-            var window = new PleaseWait() {
-                WindowStartupLocation = WindowStartupLocation.Manual,
-                Left = Left + Width / 2.5,
-                Top = Top + Height / 2.5,
-            };
+            var window = new PleaseWait() { Owner = this };
             window.Show();
+            window.Activate();
             var record = Database.SearchProject(project.项目号);
             var currentRecord = await record;
             var showProject = new ShowProject {
@@ -329,10 +332,12 @@ namespace Lab3 {
             Activate();
             if (!verifyToModifyProject) {
                 window.Close();
+                Activate();
                 return;
             }
             verifyToModifyProject = true;
             window.Show();
+            window.Activate();
             bool authoreCmp = Utils.CompareTeacherList(currentRecord, Global.newProject);
             bool attrCmp = Utils.CompareProjectAttr(currentRecord, Global.newProject);
             Database.UpdateMode mode = attrCmp ?
@@ -340,6 +345,7 @@ namespace Lab3 {
                 (authoreCmp ? Database.UpdateMode.AttrOnly : Database.UpdateMode.All);
             bool res = await Database.UpdateProject(Global.newProject, mode);
             window.Close();
+            Activate();
             if (res) {
                 await Utils.MessageTips("项目信息更新完成。", dialogIdentifier);
                 RefreshProjectButtonClick(sender, e);
@@ -358,14 +364,12 @@ namespace Lab3 {
             showProject.ShowDialog();
             Activate();
             if (!verifyToModifyProject) return;
-            var window = new PleaseWait() {
-                WindowStartupLocation = WindowStartupLocation.Manual,
-                Left = Left + Width / 2.5,
-                Top = Top + Height / 2.5,
-            };
+            var window = new PleaseWait() { Owner = this };
             window.Show();
+            window.Activate();
             bool res = await Database.AddProject(Global.newProject);
             window.Close();
+            Activate();
             if (res) {
                 await Utils.MessageTips("项目添加成功。", dialogIdentifier);
                 RefreshProjectButtonClick(sender, e);
@@ -377,14 +381,14 @@ namespace Lab3 {
             if (userLesson.SelectedItem is not Lesson lesson) return;
             if (!await Utils.VerificationDialog($"将删除课程号: {lesson.课程号}，不可恢复，是否确定？",
                 dialogIdentifier)) return;
-            var window = new PleaseWait() {
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
-            };
+            var window = new PleaseWait() { Owner = this };
             window.Show();
+            window.Activate();
             var id = lesson.课程号;
             int res = await Database.RemoveLesson(id);
             await RefreshLesson();
             window.Close();
+            Activate();
             if (res == 0) await Utils.MessageTips("所选课程已删除。", dialogIdentifier);
             else if (res == 1) await Utils.MessageTips("数据库错误。", dialogIdentifier);
             else await Utils.MessageTips("未知错误。", dialogIdentifier);
@@ -398,12 +402,12 @@ namespace Lab3 {
 
         private async void RefreshLessonButtonClick(object sender, RoutedEventArgs e) {
             var refresh = RefreshLesson();
-            var window = new PleaseWait() {
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
-            };
+            var window = new PleaseWait() { Owner = this };
             window.Show();
+            window.Activate();
             await refresh;
             window.Close();
+            Activate();
         }
 
         public bool verifyToModifyLesson = false;
@@ -412,12 +416,9 @@ namespace Lab3 {
         private async void ModifyLessonButtonClick(object sender, RoutedEventArgs e) {
             verifyToModifyLesson = false;
             if (userLesson.SelectedItem is not Lesson lesson) return;
-            var window = new PleaseWait() {
-                WindowStartupLocation = WindowStartupLocation.Manual,
-                Left = Left + Width / 2.5,
-                Top = Top + Height / 2.5,
-            };
+            var window = new PleaseWait() { Owner = this };
             window.Show();
+            window.Activate();
             var record = Database.SearchLesson(lesson.课程号);
             var currentRecord = await record;
             var showLesson = new ShowLesson {
@@ -434,10 +435,12 @@ namespace Lab3 {
             Activate();
             if (!verifyToModifyLesson) {
                 window.Close();
+                Activate();
                 return;
             }
             verifyToModifyLesson = true;
             window.Show();
+            window.Activate();
             bool authoreCmp = Utils.CompareTeacherList(currentRecord, Global.newLesson);
             bool attrCmp = Utils.CompareLessonAttr(currentRecord, Global.newLesson);
             Database.UpdateMode mode = attrCmp ?
@@ -445,6 +448,7 @@ namespace Lab3 {
                 (authoreCmp ? Database.UpdateMode.AttrOnly : Database.UpdateMode.All);
             bool res = await Database.UpdateLesson(Global.newLesson, mode);
             window.Close();
+            Activate();
             if (res) {
                 await Utils.MessageTips("课程信息更新完成。", dialogIdentifier);
                 RefreshLessonButtonClick(sender, e);
@@ -463,14 +467,12 @@ namespace Lab3 {
             showLesson.ShowDialog();
             Activate();
             if (!verifyToModifyLesson) return;
-            var window = new PleaseWait() {
-                WindowStartupLocation = WindowStartupLocation.Manual,
-                Left = Left + Width / 2.5,
-                Top = Top + Height / 2.5,
-            };
+            var window = new PleaseWait() { Owner = this };
             window.Show();
+            window.Activate();
             bool res = await Database.AddLesson(Global.newLesson);
             window.Close();
+            Activate();
             if (res) {
                 await Utils.MessageTips("课程添加成功。", dialogIdentifier);
                 RefreshLessonButtonClick(sender, e);
@@ -499,8 +501,26 @@ namespace Lab3 {
             ModifyLessonButtonClick(sender, e);
         }
 
-        private void TotalButtonClick(object sender, RoutedEventArgs e) {
-
+        private async void TotalButtonClick(object sender, RoutedEventArgs e) {
+            int startYear = 0, endYear = 0;
+            if (this.startYear.Text.Length > 0) startYear = int.Parse(this.startYear.Text);
+            if (this.endYear.Text.Length > 0) endYear = int.Parse(this.endYear.Text);
+            if (endYear < startYear) {
+                await Utils.MessageTips("终止年份应晚于起始年份。", dialogIdentifier);
+                return;
+            }
+            var window = new PleaseWait() { Owner = this };
+            window.Show();
+            window.Activate();
+            await Utils.UpdateTotal(startYear, endYear);
+            totalPaper.Items.Refresh();
+            totalLesson.Items.Refresh();
+            totalProject.Items.Refresh();
+            lessonPanel.Visibility = Visibility.Visible;
+            projectPanel.Visibility = Visibility.Visible;
+            paperPanel.Visibility = Visibility.Visible;
+            window.Close();
+            Activate();
         }
 
         private void ExportButtonClick(object sender, RoutedEventArgs e) {

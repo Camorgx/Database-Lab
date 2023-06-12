@@ -143,7 +143,7 @@ namespace Lab3 {
                     开始年份 = reader.GetInt32("startYear"),
                     结束年份 = reader.GetInt32("endYear"),
                     排名 = reader.GetInt32("projectRank"),
-                    承担金额 = reader.GetFloat("money")
+                    承担经费 = reader.GetFloat("money")
                 });
             }
             return true;

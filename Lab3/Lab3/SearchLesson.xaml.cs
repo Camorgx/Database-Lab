@@ -54,7 +54,7 @@ namespace Lab3 {
             if (lessonName.Text.Length > 0) arguments.Add($"lessonName = '{lessonName.Text}'");
             if (this.startYear.Text.Length > 0) arguments.Add($"lessonYear >= {startYear}");
             if (this.endYear.Text.Length > 0) arguments.Add($"lessonYear <= {endYear}");
-            if (lessonType.SelectedIndex > 0) arguments.Add($"lessonType = {lessonType}");
+            if (lessonType.SelectedIndex > 0) arguments.Add($"lessonType = {lessonType.SelectedIndex}");
             if (totalHour.Text.Length > 0) arguments.Add($"totalHour >= {startHour} and totalMoney <= {endHour}");
             if (lessonTerm.SelectedIndex > 0) {
                 arguments.Add($"term = {lessonTerm.SelectedIndex}");

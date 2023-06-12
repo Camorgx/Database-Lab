@@ -14,7 +14,7 @@ namespace Lab3 {
 
         public class Pair {
             public string 工号 { get; set; } = "";
-            public float 承担金额 { get; set; } = 0;
+            public float 承担经费 { get; set; } = 0;
         }
 
         private bool isReadOnly = false;
@@ -39,7 +39,7 @@ namespace Lab3 {
 
         private void UserControlLoaded(object sender, System.Windows.RoutedEventArgs e) {
             foreach (var (id, _, money) in Record.teachers)
-                Authors.Add(new Pair { 工号 = id, 承担金额 = money });
+                Authors.Add(new Pair { 工号 = id, 承担经费 = money });
             teachers.ItemsSource = Authors;
             projectID.Text = Record.id;
             projectName.Text = Record.name;
@@ -50,7 +50,7 @@ namespace Lab3 {
             totalMoney.Text = Record.totalMoney.ToString();
         }
 
-        private void InputNumberOnly(object sender, System.Windows.Input.TextCompositionEventArgs e) {
+        private void InputNumberOnly(object sender, TextCompositionEventArgs e) {
             e.Handled = new Regex("[^0-9]+").IsMatch(e.Text);
         }
 
@@ -68,7 +68,7 @@ namespace Lab3 {
             foreach (var item in teachers.Items) {
                 Pair pair = (item as Pair) ?? new Pair();
                 string id = pair.工号;
-                float money = pair.承担金额;
+                float money = pair.承担经费;
                 if (id.Length != 0) res.teachers.Add((id, "", money));
             }
             return res;

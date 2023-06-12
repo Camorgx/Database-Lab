@@ -171,5 +171,32 @@ namespace Lab3 {
                 if (total != record.totalHour) return 2;
             return 0;
         }
+
+        public static async Task<bool> UpdateTotal(int startYear, int endYear) {
+            string teacherID = Global.teacher.ID;
+            var updateLesson = Database.LoadLessonData(teacherID);
+            var updateProject = Database.LoadProjectData(teacherID);
+            var updatePaper = Database.LoadPaperData(teacherID);
+            Global.totalLesson.Clear();
+            Global.totalProject.Clear();
+            Global.totalPaper.Clear();
+            await updateLesson;
+            await updateProject;
+            await updatePaper;
+            if (endYear == 0) endYear = int.MaxValue;
+            foreach (var item in Global.userLesson) {
+                if (item.年份 >= startYear && item.年份 <= endYear) 
+                    Global.totalLesson.Add(item);
+            }
+            foreach (var item in Global.userPaper) {
+                if (item.发表年份 >= startYear && item.发表年份 <= endYear)
+                    Global.totalPaper.Add(item);
+            }
+            foreach (var item in Global.userProject) {
+                if (item.开始年份 >= startYear && item.结束年份 <= endYear)
+                    Global.totalProject.Add(item);
+            }
+            return true;
+        }
     }
 }

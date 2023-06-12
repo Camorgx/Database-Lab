@@ -21,7 +21,7 @@ namespace Lab3 {
         public int 开始年份 { get; set; } = 2010;
         public int 结束年份 { get; set; } = 2020;
         public int 排名 { get; set; } = 1;
-        public float 承担金额 { get; set; } = 0;
+        public float 承担经费 { get; set; } = 0;
     }
 
     class Lesson {
@@ -83,5 +83,9 @@ namespace Lab3 {
         public static PaperRecord newPaper = new();
         public static ProjectRecord newProject = new();
         public static LessonRecord newLesson = new();
+
+        public static List<Lesson> totalLesson = new();
+        public static List<Paper> totalPaper = new();
+        public static List<Project> totalProject = new();
     }
 }
