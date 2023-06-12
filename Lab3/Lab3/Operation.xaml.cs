@@ -474,5 +474,12 @@ namespace Lab3 {
             }
             else await Utils.MessageTips("课程添加失败。", dialogIdentifier);
         }
+
+        private void searchTypeSelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e) {
+            string[][] keywordTypes = {
+                new string[] {"请选择", "工号", "姓名"},
+                new string[] { "请选择", "序号", "论文名称", "论文来源", }
+            };
+        }
     }
 }

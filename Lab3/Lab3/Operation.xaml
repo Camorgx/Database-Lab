@@ -38,7 +38,7 @@
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="Account" VerticalAlignment="Center" Foreground="#707070"/>
                             <TextBox x:Name="teacherID" materialDesign:HintAssist.Hint="工号" 
-                                     Width="350" Margin="5" MaxLength="5" IsEnabled="False" 
+                                     Width="350" Margin="5" MaxLength="5" IsEnabled="False" FontSize="15"
                                      Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                                      materialDesign:TextFieldAssist.CharacterCounterVisibility="Hidden"/>
                         </StackPanel>
@@ -47,14 +47,14 @@
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="Account" VerticalAlignment="Center" Foreground="#707070"/>
                             <TextBox x:Name="name" materialDesign:HintAssist.Hint="姓名" Width="350" Margin="5"
-                                     Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                                     Style="{StaticResource MaterialDesignFloatingHintTextBox}" FontSize="15"
                                      materialDesign:TextFieldAssist.CharacterCounterVisibility="Hidden"/>
                         </StackPanel>
                     </StackPanel>
                     <StackPanel Width="auto" Height="auto" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="2">
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="GenderEnby" VerticalAlignment="Center" Foreground="#707070"/>
-                            <ComboBox x:Name="gender" Width="350"
+                            <ComboBox x:Name="gender" Width="350" FontSize="15"
                                       materialDesign:HintAssist.Hint="性别"
                                       Style="{StaticResource MaterialDesignFloatingHintComboBox}">
                                 <ComboBoxItem Content="男" />
@@ -66,7 +66,7 @@
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="GenderEnby" VerticalAlignment="Center" Foreground="#707070"/>
                             <ComboBox x:Name="teacherTitle" Width="350"
-                                      materialDesign:HintAssist.Hint="职称"
+                                      materialDesign:HintAssist.Hint="职称" FontSize="15"
                                       Style="{StaticResource MaterialDesignFloatingHintComboBox}">
                                 <ComboBoxItem Content="博士后" />
                                 <ComboBoxItem Content="助教" />
@@ -90,7 +90,7 @@
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="Key" VerticalAlignment="Center" Foreground="#707070"/>
                             <PasswordBox x:Name="oldPassword" Width="350" MaxLength="20"
-                             materialDesign:HintAssist.Hint="旧密码"
+                             materialDesign:HintAssist.Hint="旧密码" FontSize="15"
                              Style="{StaticResource MaterialDesignRevealPasswordBox}"
                              materialDesign:TextFieldAssist.CharacterCounterVisibility="Visible"
                              materialDesign:TextFieldAssist.HasClearButton="True" Margin="5"/>
@@ -101,7 +101,7 @@
                             <materialDesign:PackIcon Kind="Key" VerticalAlignment="Bottom" Foreground="#707070"/>
                             <PasswordBox x:Name="newPassword" Width="350" MaxLength="20"
                              materialDesign:HintAssist.HelperText="不超过 20 个字符，包含字母和数字。"
-                             materialDesign:HintAssist.Hint="新密码"
+                             materialDesign:HintAssist.Hint="新密码" FontSize="15"
                              Style="{StaticResource MaterialDesignFloatingHintRevealPasswordBox}"
                              materialDesign:TextFieldAssist.CharacterCounterVisibility="Visible"
                              materialDesign:TextFieldAssist.HasClearButton="True" Margin="5"/>
@@ -112,7 +112,7 @@
                             <materialDesign:PackIcon Kind="Key" VerticalAlignment="Bottom" Foreground="#707070"/>
                             <PasswordBox x:Name="verifyPassword" Width="350" MaxLength="20"
                              materialDesign:HintAssist.HelperText="请保持两次输入的密码一致。"
-                             materialDesign:HintAssist.Hint="确认密码"
+                             materialDesign:HintAssist.Hint="确认密码" FontSize="15"
                              Style="{StaticResource MaterialDesignFloatingHintRevealPasswordBox}"
                              materialDesign:TextFieldAssist.CharacterCounterVisibility="Visible"
                              materialDesign:TextFieldAssist.HasClearButton="True" Margin="5"/>
@@ -295,9 +295,6 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="80"></RowDefinition>
                                 <RowDefinition Height="auto"></RowDefinition>
-                                <RowDefinition Height="50"></RowDefinition>
-                                <RowDefinition Height="80"></RowDefinition>
-                                <RowDefinition Height="auto"></RowDefinition>
                             </Grid.RowDefinitions>
                             <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0"
                                         VerticalAlignment="Top" HorizontalAlignment="Left">
@@ -319,6 +316,37 @@
                         <TextBlock HorizontalAlignment="Center" Text="查询" />
                     </StackPanel>
                 </TabItem.Header>
+                <ScrollViewer VerticalScrollBarVisibility="Auto" VerticalAlignment="Top" MaxHeight="800">
+                    <StackPanel Margin="50, 50, 50, 50">
+                        <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="900"></ColumnDefinition>
+                                <ColumnDefinition Width="50"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="80"></RowDefinition>
+                                <RowDefinition Height="80"></RowDefinition>
+                                <RowDefinition Height="auto"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0"
+                                        VerticalAlignment="Top" HorizontalAlignment="Left">
+                                <Label Content="教学科研信息查询" FontFamily="Segoe UI Black" FontSize="30"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left">
+                                <materialDesign:PackIcon Width="24" Height="24" VerticalAlignment="Center" Kind="Drag"/>
+                                <ComboBox x:Name="searchType" materialDesign:HintAssist.Hint="查询类型" SelectedIndex="0"
+                                          FontSize="15" Width="200" Margin="10, 0" SelectionChanged="searchTypeSelectionChanged"
+                                          Style="{StaticResource MaterialDesignFloatingHintComboBox}">
+                                    <ComboBoxItem Content="请选择"/>
+                                    <ComboBoxItem Content="教师"/>
+                                    <ComboBoxItem Content="论文"/>
+                                    <ComboBoxItem Content="项目"/>
+                                    <ComboBoxItem Content="课程"/>
+                                </ComboBox>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </ScrollViewer>
             </TabItem>
             <TabItem>
                 <TabItem.Header>

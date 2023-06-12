@@ -83,5 +83,10 @@ namespace Lab3 {
         public static PaperRecord newPaper = new();
         public static ProjectRecord newProject = new();
         public static LessonRecord newLesson = new();
+
+        public static List<Teacher> resultTeacher = new();
+        public static List<Paper> reaultPaper = new();
+        public static List<Project> resultProject = new();
+        public static List<Lesson> resultLesson = new();
     }
 }

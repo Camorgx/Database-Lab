@@ -1,14 +1,15 @@
 ﻿using MySqlConnector;
+using System.Configuration;
 using System.Data;
 using System.Threading.Tasks;
 
 namespace Lab3 {
     static class Database {
         private static readonly string connectString = new MySqlConnectionStringBuilder {
-            Server = "localhost",
-            UserID = "root",
-            Password = "2004",
-            Database = "lab3"
+            Server = ConfigurationManager.AppSettings["DatabaseAddress"],
+            UserID = ConfigurationManager.AppSettings["DatabaseUID"],
+            Password = ConfigurationManager.AppSettings["DatabasePassword"],
+            Database = ConfigurationManager.AppSettings["DatabaseName"]
         }.ConnectionString;
         private static readonly MySqlConnection connection = new(connectString);
 

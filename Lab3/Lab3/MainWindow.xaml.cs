@@ -22,7 +22,7 @@ namespace Lab3 {
             DragMove();
         }
 
-        private async Task<string> GetYiYanWords() {
+        private static async Task<string> GetYiYanWords() {
             string res;
             try {
                 var client = new HttpClient();

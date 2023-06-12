@@ -36,7 +36,7 @@
             <StackPanel Orientation="Horizontal">
                 <materialDesign:PackIcon Kind="Key" VerticalAlignment="Center" Foreground="#707070"/>
                 <PasswordBox x:Name="password" materialDesign:HintAssist.Hint="密码" Width="250" Margin="5"
-                             x:FieldModifier="public"
+                             x:FieldModifier="public" 
                              Style="{StaticResource MaterialDesignRevealPasswordBox}"
                              materialDesign:TextFieldAssist.HasClearButton="True"/>
             </StackPanel>
