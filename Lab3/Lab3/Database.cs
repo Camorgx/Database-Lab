@@ -167,7 +167,7 @@ namespace Lab3 {
                     学时数 = reader.GetInt32("totalHour"),
                     课程性质 = ItemTranslation.LessonType[reader.GetInt32("type")],
                     年份 = reader.GetInt32("year"),
-                    学期 = reader.GetInt32("term"),
+                    学期 = ItemTranslation.Term[reader.GetInt32("term")],
                     承担学时 = reader.GetInt32("hour")
                 });
             }

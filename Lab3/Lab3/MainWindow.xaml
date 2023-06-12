@@ -31,7 +31,8 @@
             <StackPanel Margin="0,15" Orientation="Horizontal">
                 <materialDesign:PackIcon Kind="Account" VerticalAlignment="Center" Foreground="#707070"/>
                 <TextBox x:Name="teacherID" materialDesign:HintAssist.Hint="工号" Width="250" Margin="5"
-                         materialDesign:TextFieldAssist.HasClearButton="True"/>
+                         materialDesign:TextFieldAssist.HasClearButton="True" MaxLength="5"
+                         materialDesign:TextFieldAssist.CharacterCounterVisibility="Hidden"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <materialDesign:PackIcon Kind="Key" VerticalAlignment="Center" Foreground="#707070"/>

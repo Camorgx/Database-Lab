@@ -1,10 +1,14 @@
-﻿using MaterialDesignThemes.Wpf;
+﻿using Aspose.Words;
+using MaterialDesignThemes.Wpf;
 using System;
 using System.Windows;
 using System.Windows.Input;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Text.RegularExpressions;
+using Microsoft.Win32;
+using System.Configuration;
+using System.IO;
 
 namespace Lab3 {
     /// <summary>
@@ -516,15 +520,46 @@ namespace Lab3 {
             totalPaper.Items.Refresh();
             totalLesson.Items.Refresh();
             totalProject.Items.Refresh();
-            lessonPanel.Visibility = Visibility.Visible;
-            projectPanel.Visibility = Visibility.Visible;
-            paperPanel.Visibility = Visibility.Visible;
             window.Close();
             Activate();
         }
 
-        private void ExportButtonClick(object sender, RoutedEventArgs e) {
-
+        private async void ExportButtonClick(object sender, RoutedEventArgs e) {
+            var dialog = new SaveFileDialog {
+                InitialDirectory = ConfigurationManager.AppSettings["ExportDIR"] ??
+                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                Filter = "Markdown 文档 (*.md)|*.md|PDF 文件 (*.pdf)|*.pdf"
+            };
+            string filePath;
+            if (dialog.ShowDialog() ?? false) filePath = dialog.FileName;
+            else return;
+            string mdPath = filePath.Replace(".pdf", ".tmp.md");
+            var window = new PleaseWait() { Owner = this };
+            int startYear = 0, endYear = 0;
+            if (this.startYear.Text.Length > 0) startYear = int.Parse(this.startYear.Text);
+            if (this.endYear.Text.Length > 0) endYear = int.Parse(this.endYear.Text);
+            if (endYear < startYear) {
+                await Utils.MessageTips("终止年份应晚于起始年份。", dialogIdentifier);
+                return;
+            }
+            window.Show();
+            window.Activate();
+            await Utils.UpdateTotal(startYear, endYear);
+            totalPaper.Items.Refresh();
+            totalLesson.Items.Refresh();
+            totalProject.Items.Refresh();
+            string mdString = Utils.GenerateTotalMDString(startYear, endYear);
+            using (var outputFile = new StreamWriter(mdPath)) {
+                await outputFile.WriteAsync(mdString);
+            }
+            if (filePath.EndsWith(".pdf")) {
+                var doc = new Document(mdPath);
+                doc.Save(filePath);
+                File.Delete(mdPath);
+            }
+            window.Close();
+            await Utils.MessageTips("导出成功。", dialogIdentifier);
+            Activate();
         }
     }
 }

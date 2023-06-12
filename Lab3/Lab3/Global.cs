@@ -10,6 +10,11 @@ namespace Lab3 {
         public string 级别 { get; set; } = "";
         public int 排名 { get; set; } = 1;
         public string 是否通讯作者 { get; set; } = "";
+
+        public override string ToString() {
+            return $"{论文名称}，{发表源}，{发表年份}，{类型}，排名第 {排名}" +
+                (是否通讯作者 == "是" ? "，通讯作者" : "");
+        }
     }
 
     class Project {
@@ -22,6 +27,11 @@ namespace Lab3 {
         public int 结束年份 { get; set; } = 2020;
         public int 排名 { get; set; } = 1;
         public float 承担经费 { get; set; } = 0;
+
+        public override string ToString() {
+            return $"{项目名称}，{项目来源}，{项目类型}，{开始年份}-{结束年份}，" +
+                   $"总经费：{总经费}，承担经费：{承担经费}";
+        }
     }
 
     class Lesson {
@@ -30,8 +40,13 @@ namespace Lab3 {
         public int 学时数 { get; set; } = 0;
         public string 课程性质 { get; set; } = "";
         public int 年份 { get; set; } = 2010;
-        public int 学期 { get; set; } = 1;
+        public string 学期 { get; set; } = "";
         public int 承担学时 { get; set; } = 0;
+
+        public override string ToString() {
+            return $"课程号：{课程号}\t课程名：{课程名称}\t" +
+                   $"主讲学时：{承担学时}\t学期：{年份} {学期[0]}";
+        }
     }
 
     class Teacher {
@@ -39,6 +54,11 @@ namespace Lab3 {
         public string Name { get; set; } = "";
         public int Gender { get; set; } = 1;
         public int Title { get; set; } = 1;
+
+        public override string ToString() {
+            return $"工号：{ID}\t姓名：{Name}\t性别：{ItemTranslation.Gender[Gender]}\t" +
+                   $"职称：{ItemTranslation.TeacherType[Title]}";
+        }
     }
 
     public class PaperRecord {

@@ -1,6 +1,7 @@
 ﻿using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Lab3 {
@@ -197,6 +198,22 @@ namespace Lab3 {
                     Global.totalProject.Add(item);
             }
             return true;
+        }
+
+        public static string GenerateTotalMDString(int startYear, int endYear) {
+            var builder = new StringBuilder();
+            string start = startYear == 0 ? "起始" : startYear.ToString();
+            string end = endYear == 0 ? "至今" : endYear.ToString();
+            builder.AppendLine($"# 教师教学科研工作统计（{start}-{end}）");
+            builder.AppendLine("## 教师基本信息");
+            builder.AppendLine(Global.teacher.ToString());
+            builder.AppendLine("## 教学情况");
+            foreach (var item in Global.totalLesson) builder.AppendLine(item.ToString());
+            builder.AppendLine("## 发表论文情况");
+            foreach (var item in Global.totalPaper) builder.AppendLine(item.ToString());
+            builder.AppendLine("## 承担项目情况");
+            foreach (var item in Global.totalProject) builder.AppendLine(item.ToString());
+            return builder.ToString();
         }
     }
 }

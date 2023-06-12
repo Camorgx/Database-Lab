@@ -402,7 +402,7 @@
                                     FontFamily="Segoe UI Black" FontSize="18" Width="100" Height="40" Click="ExportButtonClick"
                                     Grid.Column="7" Background="#FF307CD6" BorderBrush="#FF307CD6"/>
                         </Grid>
-                        <StackPanel Margin="0, 50, 50, 50" Visibility="Hidden" x:Name="lessonPanel">
+                        <StackPanel Margin="0, 50, 50, 50" x:Name="lessonPanel">
                             <Label Content="教学情况" Margin="70,0" FontFamily="Segoe UI Black" 
                                    FontSize="25" HorizontalAlignment="Center"/>
                             <DataGrid CanUserAddRows="False" x:Name="totalLesson" IsReadOnly="True"
@@ -410,7 +410,7 @@
                                       SelectionMode="Single" SelectionUnit="FullRow">
                             </DataGrid>
                         </StackPanel>
-                        <StackPanel Margin="0, 0, 50, 50" Visibility="Hidden" x:Name="paperPanel">
+                        <StackPanel Margin="0, 0, 50, 50" x:Name="paperPanel">
                             <Label Content="发表论文情况" Margin="70,0" FontFamily="Segoe UI Black" 
                                    FontSize="25" HorizontalAlignment="Center"/>
                             <DataGrid CanUserAddRows="False" x:Name="totalPaper" IsReadOnly="True" 
@@ -418,7 +418,7 @@
                                       SelectionMode="Single" SelectionUnit="FullRow">
                             </DataGrid>
                         </StackPanel>
-                        <StackPanel Margin="0, 0, 50, 50" Visibility="Hidden" x:Name="projectPanel">
+                        <StackPanel Margin="0, 0, 50, 50" x:Name="projectPanel">
                             <Label Content="承担项目情况" Margin="70,0" FontFamily="Segoe UI Black" 
                                    FontSize="25" HorizontalAlignment="Center"/>
                             <DataGrid CanUserAddRows="False" x:Name="totalProject" IsReadOnly="True"
