@@ -25,6 +25,19 @@ namespace Lab3 {
             秋季学期,  
         }
 
+        private bool isReadOnly = false;
+        public bool IsReadOnly {
+            get { return isReadOnly; }
+            set {
+                isReadOnly = value;
+                lessonID.IsReadOnly = value;
+                lessonName.IsReadOnly = value;
+                lessonHour.IsReadOnly = value;
+                lessonType.IsEnabled = !value;
+                teachers.IsReadOnly = value;
+            }
+        }
+
         public LessonRecord Record { get; set; } = new();
 
         public List<Pair> Authors { get; set; } = new();

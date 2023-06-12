@@ -9,6 +9,15 @@ namespace Lab3 {
             InitializeComponent();
         }
 
+        private bool isReadOnly = false;
+        public bool IsReadOnly {
+            get { return isReadOnly; }
+            set {
+                isReadOnly = value;
+                view.IsReadOnly = value;
+            }
+        }
+
         public bool CheckLessonID { get; set; } = false;
         private static readonly string dialogVerifier = "ShowLessonDialog";
 

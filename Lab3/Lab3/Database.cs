@@ -3,6 +3,7 @@ using System.Configuration;
 using System.Data;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Windows.Documents;
 
 namespace Lab3 {
     static class Database {
@@ -646,6 +647,22 @@ namespace Lab3 {
             foreach (int id in ids)
                 res[id] = await SearchPaper(id, transaction);
             await transaction.CommitAsync();
+            return res;
+        }
+
+        public static async Task<List<Teacher>> SearchTeacherWithRequirement(string reqString) {
+            using var command = connection.CreateCommand();
+            command.CommandText = reqString;
+            using var reader = await command.ExecuteReaderAsync();
+            List<Teacher> res = new();
+            while (await reader.ReadAsync()) {
+                res.Add(new Teacher {
+                    ID = reader.GetString(0),
+                    Name = reader.GetString(1),
+                    Gender = reader.GetInt32(2),
+                    Title = reader.GetInt32(3),
+                });
+            }
             return res;
         }
     }

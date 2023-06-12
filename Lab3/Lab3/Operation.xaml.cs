@@ -78,6 +78,7 @@ namespace Lab3 {
 
         private void InitSearch() {
             searchPaper.Owner = this;
+            searchTeacher.Owner = this;
         }
 
         private void WindowLoaded(object sender, RoutedEventArgs e) {
@@ -96,8 +97,16 @@ namespace Lab3 {
             };
             window.Show();
             var newName = name.Text;
-            var newGender = gender.SelectedIndex + 1;
-            var newTitle = teacherTitle.SelectedIndex + 1;
+            var newGender = gender.SelectedIndex;
+            if (newGender == 0) {
+                await Utils.MessageTips("请选择性别。", dialogIdentifier);
+                return;
+            }
+            var newTitle = teacherTitle.SelectedIndex;
+            if (newTitle == 0) {
+                await Utils.MessageTips("请选择职称。", dialogIdentifier);
+                return;
+            }
             var update = Database.UpdateTeacherData(teacherID.Text, newName, newGender, newTitle);
             var res = await update;
             window.Close();

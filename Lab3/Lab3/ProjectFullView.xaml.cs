@@ -16,6 +16,22 @@ namespace Lab3 {
             public float 承担金额 { get; set; } = 0;
         }
 
+        private bool isReadOnly = false;
+        public bool IsReadOnly {
+            get { return isReadOnly; }
+            set {
+                isReadOnly = value;
+                projectID.IsReadOnly = value;
+                projectName.IsReadOnly = value;
+                projectSouce.IsReadOnly = value;
+                projectType.IsEnabled = !value;
+                totalMoney.IsReadOnly = value;
+                startYear.IsEnabled = !value;
+                endYear.IsEnabled = !value;
+                teachers.IsReadOnly = value;
+            }
+        }
+
         public ProjectRecord Record { get; set; } = new();
 
         public List<Pair> Authors { get; set; } = new();
