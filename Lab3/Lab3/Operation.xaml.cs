@@ -480,5 +480,17 @@ namespace Lab3 {
                         Visibility.Visible : Visibility.Hidden;
             }
         }
+
+        private void OwnPaperMouseDoubleClick(object sender, MouseButtonEventArgs e) {
+            ModifyPaperButtonClick(sender, e);
+        }
+
+        private void OwnProjectMouseDoubleClick(object sender, MouseButtonEventArgs e) {
+            ModifyProjectButtonClick(sender, e);
+        }
+
+        private void OwnLessonMouseDoubleClick(object sender, MouseButtonEventArgs e) {
+            ModifyLessonButtonClick(sender, e);
+        }
     }
 }
