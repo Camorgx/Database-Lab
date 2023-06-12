@@ -3,7 +3,6 @@ using System.Configuration;
 using System.Data;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using System.Windows.Documents;
 
 namespace Lab3 {
     static class Database {
@@ -663,6 +662,23 @@ namespace Lab3 {
                     Title = reader.GetInt32(3),
                 });
             }
+            return res;
+        }
+
+        public static async Task<Dictionary<string, ProjectRecord>> SearchProjectWithRequirement(string reqString) {
+            var transaction = await connection.BeginTransactionAsync();
+            using var command = connection.CreateCommand();
+            command.CommandText = reqString;
+            command.Transaction = transaction;
+            var reader = await command.ExecuteReaderAsync();
+            Dictionary<string, ProjectRecord> res = new();
+            IList<string> ids = new List<string>();
+            while (await reader.ReadAsync())
+                ids.Add(reader.GetString(0));
+            await reader.DisposeAsync();
+            foreach (string id in ids)
+                res[id] = await SearchProject(id, transaction);
+            await transaction.CommitAsync();
             return res;
         }
     }

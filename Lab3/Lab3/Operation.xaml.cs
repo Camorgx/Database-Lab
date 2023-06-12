@@ -79,6 +79,7 @@ namespace Lab3 {
         private void InitSearch() {
             searchPaper.Owner = this;
             searchTeacher.Owner = this;
+            searchProject.Owner = this;
         }
 
         private void WindowLoaded(object sender, RoutedEventArgs e) {
@@ -472,7 +473,7 @@ namespace Lab3 {
         }
 
         private void searchTypeSelectionChanged(object sender, SelectionChangedEventArgs e) {
-            UserControl[] controls = { searchTeacher, searchPaper };
+            UserControl[] controls = { searchTeacher, searchPaper, searchProject, searchLesson };
             for (int i = 0; i < controls.Length; ++i) {
                 if (controls[i] is not null)
                     controls[i].Visibility = (i == searchType.SelectedIndex - 1) ? 

@@ -348,8 +348,10 @@
                             </StackPanel>
                         </Grid>
                         <Grid>
-                            <local:SearchPaper x:Name="searchPaper" Visibility="Hidden"/>
                             <local:SearchTeacher x:Name="searchTeacher" Visibility="Hidden"/>
+                            <local:SearchPaper x:Name="searchPaper" Visibility="Hidden"/>
+                            <local:SearchProject x:Name="searchProject" Visibility="Hidden"/>
+                            <local:SearchLesson x:Name="searchLesson" Visibility="Hidden"/>
                         </Grid>
                     </StackPanel>
                 </ScrollViewer>
