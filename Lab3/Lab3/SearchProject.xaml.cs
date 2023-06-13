@@ -38,7 +38,7 @@ namespace Lab3 {
             int startYear = 0, endYear = 0;
             if (this.startYear.Text.Length > 0) startYear = int.Parse(this.startYear.Text);
             if (this.endYear.Text.Length > 0) endYear = int.Parse(this.endYear.Text);
-            if (endYear < startYear) {
+            if (startYear != 0 && endYear != 0 && endYear < startYear) {
                 await Utils.MessageTips("终止年份应晚于起始年份。", DialogIdentifier);
                 throw new System.ArgumentException();
             }
@@ -52,8 +52,8 @@ namespace Lab3 {
             if (projectID.Text.Length > 0) arguments.Add($"project.projectID = {projectID.Text}");
             if (projectName.Text.Length > 0) arguments.Add($"projectName = '{projectName.Text}'");
             if (projectSource.Text.Length > 0) arguments.Add($"projectSource = '{projectSource.Text}'");
-            if (this.startYear.Text.Length > 0) arguments.Add($"projectYear >= {startYear}");
-            if (this.endYear.Text.Length > 0) arguments.Add($"projectYear <= {endYear}");
+            if (this.startYear.Text.Length > 0) arguments.Add($"startYear >= {startYear}");
+            if (this.endYear.Text.Length > 0) arguments.Add($"endYear <= {endYear}");
             if (projectType.SelectedIndex > 0) arguments.Add($"projectType = {projectType.SelectedIndex}");
             if (totalMoney.Text.Length > 0) arguments.Add($"totalMoney >= {startMoney} and totalMoney <= {endMoney}");
             if (arguments.Count == 0) return initString;
@@ -70,6 +70,7 @@ namespace Lab3 {
         }
 
         private void DataGridMouseDoubleClick(object sender, MouseButtonEventArgs e) {
+            if (searchResult.SelectedItem is null) return;
             var show = new ShowProject {
                 Message = { Content = "查看项目详情" },
                 view = {

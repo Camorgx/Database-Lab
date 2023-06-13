@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" ResizeMode="NoResize" WindowStartupLocation="CenterOwner"
-        Title="PleaseWaiting" Height="100" Width="100" WindowStyle="None">
+        Title="请耐心等待" Height="100" Width="100" WindowStyle="None">
     <Grid>
         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
             <ProgressBar IsIndeterminate="True" Value="0"

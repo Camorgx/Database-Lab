@@ -38,28 +38,35 @@ namespace Lab3 {
             int startYear = 0, endYear = 0;
             if (this.startYear.Text.Length > 0) startYear = int.Parse(this.startYear.Text);
             if (this.endYear.Text.Length > 0) endYear = int.Parse(this.endYear.Text);
-            if (endYear < startYear) {
+            if (startYear != 0 && endYear != 0 && endYear < startYear) {
                 await Utils.MessageTips("终止年份应晚于起始年份。", DialogIdentifier);
                 throw new System.ArgumentException();
             }
             string union = "select lesson.lessonID as lessonID from lesson, teach ";
             string single = "select lessonID from lesson ";
             string initString = single;
-            if (teacherID.Text.Length > 0) {
-                arguments.Add($"teacherID = {teacherID.Text}");
-                arguments.Add("lesson.lessonID = teach.lessonID");
-                initString = union;
-            }
             if (lessonID.Text.Length > 0) arguments.Add($"lesson.lessonID = {lessonID.Text}");
             if (lessonName.Text.Length > 0) arguments.Add($"lessonName = '{lessonName.Text}'");
-            if (this.startYear.Text.Length > 0) arguments.Add($"lessonYear >= {startYear}");
-            if (this.endYear.Text.Length > 0) arguments.Add($"lessonYear <= {endYear}");
             if (lessonType.SelectedIndex > 0) arguments.Add($"lessonType = {lessonType.SelectedIndex}");
             if (totalHour.Text.Length > 0) arguments.Add($"totalHour >= {startHour} and totalMoney <= {endHour}");
+            if (teacherID.Text.Length > 0) {
+                arguments.Add($"teacherID = {teacherID.Text}");
+                initString = union;
+            }
+            if (this.startYear.Text.Length > 0) {
+                arguments.Add($"year >= {startYear}");
+                initString = union;
+            }
+            if (this.endYear.Text.Length > 0) {
+                arguments.Add($"year <= {endYear}");
+                initString = union;
+            }
             if (lessonTerm.SelectedIndex > 0) {
                 arguments.Add($"term = {lessonTerm.SelectedIndex}");
                 initString = union;
             }
+            if (initString == union)
+                arguments.Add("lesson.lessonID = teach.lessonID");
             if (arguments.Count == 0) return initString;
             var sb = new StringBuilder(initString + "where ");
             for (int i = 0; i < arguments.Count; i++) {
@@ -74,6 +81,7 @@ namespace Lab3 {
         }
 
         private void DataGridMouseDoubleClick(object sender, MouseButtonEventArgs e) {
+            if (searchResult.SelectedItem is null) return;
             var show = new ShowLesson {
                 Message = { Content = "查看课程详情" },
                 view = {

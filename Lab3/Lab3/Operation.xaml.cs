@@ -116,11 +116,13 @@ namespace Lab3 {
             var newName = name.Text;
             var newGender = gender.SelectedIndex;
             if (newGender == 0) {
+                window.Close();
                 await Utils.MessageTips("请选择性别。", dialogIdentifier);
                 return;
             }
             var newTitle = teacherTitle.SelectedIndex;
             if (newTitle == 0) {
+                window.Close();
                 await Utils.MessageTips("请选择职称。", dialogIdentifier);
                 return;
             }
@@ -146,14 +148,17 @@ namespace Lab3 {
             var newPwd = newPassword.Password;
             var verPwd = verifyPassword.Password;
             if (newPwd != verPwd) {
+                window.Close();
                 await Utils.MessageTips("两次输入的密码不一致。", dialogIdentifier);
                 return;
             }
             if (oldPwd == newPwd) {
+                window.Close();
                 await Utils.MessageTips("旧密码与新密码相同。", dialogIdentifier);
                 return;
             }
             if (!Utils.VerifyPassword(newPwd)) {
+                window.Close();
                 await Utils.MessageTips("密码格式不正确。", dialogIdentifier);
                 return;
             }
@@ -509,7 +514,7 @@ namespace Lab3 {
             int startYear = 0, endYear = 0;
             if (this.startYear.Text.Length > 0) startYear = int.Parse(this.startYear.Text);
             if (this.endYear.Text.Length > 0) endYear = int.Parse(this.endYear.Text);
-            if (endYear < startYear) {
+            if (startYear != 0 && endYear != 0 && endYear < startYear) {
                 await Utils.MessageTips("终止年份应晚于起始年份。", dialogIdentifier);
                 return;
             }
@@ -538,7 +543,7 @@ namespace Lab3 {
             int startYear = 0, endYear = 0;
             if (this.startYear.Text.Length > 0) startYear = int.Parse(this.startYear.Text);
             if (this.endYear.Text.Length > 0) endYear = int.Parse(this.endYear.Text);
-            if (endYear < startYear) {
+            if (startYear != 0 && endYear != 0 && endYear < startYear) {
                 await Utils.MessageTips("终止年份应晚于起始年份。", dialogIdentifier);
                 return;
             }

@@ -22,21 +22,24 @@ namespace Lab3 {
         }
 
         private async void RegisterButtonClick(object sender, RoutedEventArgs e) {
-            var window = new PleaseWait() {
-                WindowStartupLocation = WindowStartupLocation.Manual,
-                Left = Left + Width / 2.5,
-                Top = Top + Height / 2.5,
-            };
+            var window = new PleaseWait() { Owner = this };
             window.Show();
             var id = teacherID.Text;
             var pwd = passwordBox.Password;
             var verPwd = verifyPassword.Password;
             var verify = verification.Text;
             if (pwd != verPwd) {
+                window.Close();
                 await Utils.MessageTips("两次输入的密码不一致。", "RegisterDialog");
                 return;
             }
+            if (id.Length != 5) {
+                window.Close();
+                await Utils.MessageTips("工号格式不正确。", "RegisterDialog");
+                return;
+            }
             if (!Utils.VerifyPassword(pwd)) {
+                window.Close();
                 await Utils.MessageTips("密码格式不正确。", "RegisterDialog");
                 return;
             }

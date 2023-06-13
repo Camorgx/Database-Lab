@@ -45,6 +45,10 @@ namespace Lab3 {
             window.Close();
             if (res == 0) {
                 await Utils.MessageTips("密码重置成功，请登录系统。", "ResetPasswordDialog");
+                if (Owner is MainWindow owner) {
+                    owner.rememberMe.IsChecked = false;
+                    owner.password.Password = "";
+                }
                 CloseWindowClick(sender, e);
             }
             else if (res == 1) {

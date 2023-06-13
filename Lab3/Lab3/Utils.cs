@@ -44,8 +44,6 @@ namespace Lab3 {
         }
 
         public static bool CompareAuthorList(PaperRecord a, PaperRecord b) {
-            a.authors.Sort();
-            b.authors.Sort();
             if (a.authors.Count != b.authors.Count) return false;
             for (int i = 0; i < a.authors.Count; i++) {
                 if (a.authors[i].id != b.authors[i].id
@@ -94,8 +92,6 @@ namespace Lab3 {
         }
 
         public static bool CompareTeacherList(ProjectRecord a, ProjectRecord b) {
-            a.teachers.Sort();
-            b.teachers.Sort();
             if (a.teachers.Count != b.teachers.Count) return false;
             for (int i = 0; i < a.teachers.Count; i++) {
                 if (a.teachers[i].id != b.teachers[i].id
@@ -132,8 +128,6 @@ namespace Lab3 {
         }
 
         public static bool CompareTeacherList(LessonRecord a, LessonRecord b) {
-            a.teachers.Sort();
-            b.teachers.Sort();
             if (a.teachers.Count != b.teachers.Count) return false;
             for (int i = 0; i < a.teachers.Count; i++) {
                 if (a.teachers[i].id != b.teachers[i].id) return false;
@@ -157,7 +151,7 @@ namespace Lab3 {
         }
 
         public static int VerifyLessonTeachers(LessonRecord record) {
-            Dictionary<int, int> table = new();
+            Dictionary<(int year, int term), int> table = new();
             HashSet<(string id, int year, int term)> authors = new();
             foreach (var (id, _, year, term, hour) in record.teachers) {
                 if (id.Length != 5) return 1;
@@ -165,8 +159,8 @@ namespace Lab3 {
                 var testTuple = (id, year, term);
                 if (authors.Contains(testTuple)) return 3;
                 else authors.Add(testTuple);
-                if (table.ContainsKey(year)) table[year] += hour;
-                else table[year] = hour;
+                if (table.ContainsKey((year, term))) table[(year, term)] += hour;
+                else table[(year, term)] = hour;
             }
             foreach (int total in table.Values) 
                 if (total != record.totalHour) return 2;
@@ -206,13 +200,13 @@ namespace Lab3 {
             string end = endYear == 0 ? "至今" : endYear.ToString();
             builder.AppendLine($"# 教师教学科研工作统计（{start}-{end}）");
             builder.AppendLine("## 教师基本信息");
-            builder.AppendLine(Global.teacher.ToString());
+            builder.AppendLine(Global.teacher.ToString() + '\n');
             builder.AppendLine("## 教学情况");
-            foreach (var item in Global.totalLesson) builder.AppendLine(item.ToString());
+            foreach (var item in Global.totalLesson) builder.AppendLine(item.ToString() + '\n');
             builder.AppendLine("## 发表论文情况");
-            foreach (var item in Global.totalPaper) builder.AppendLine(item.ToString());
+            foreach (var item in Global.totalPaper) builder.AppendLine(item.ToString() + '\n');
             builder.AppendLine("## 承担项目情况");
-            foreach (var item in Global.totalProject) builder.AppendLine(item.ToString());
+            foreach (var item in Global.totalProject) builder.AppendLine(item.ToString() + '\n');
             return builder.ToString();
         }
     }

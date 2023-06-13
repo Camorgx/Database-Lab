@@ -24,7 +24,7 @@ namespace Lab3 {
             int start = 0, end = 0;
             if (startYear.Text.Length > 0) start = int.Parse(startYear.Text);
             if (endYear.Text.Length > 0) end = int.Parse(endYear.Text);
-            if (end < start) {
+            if (start != 0 && end != 0 && end < start) {
                 await Utils.MessageTips("终止年份应晚于起始年份。", DialogIdentifier);
                 throw new System.ArgumentException();
             }
@@ -56,6 +56,7 @@ namespace Lab3 {
         }
 
         private void DataGridMouseDoubleClick(object sender, MouseButtonEventArgs e) {
+            if (searchResult.SelectedItem is null) return;
             var show = new ShowPaper {
                 Message = { Content = "查看论文详情" },
                 view = {
