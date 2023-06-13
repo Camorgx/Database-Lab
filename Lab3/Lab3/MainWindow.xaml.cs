@@ -77,11 +77,7 @@ namespace Lab3 {
             var id = teacherID.Text;
             var pwd = password.Password;
             var res = Database.TryLogin(id, pwd);
-            var window = new PleaseWait() {
-                WindowStartupLocation = WindowStartupLocation.Manual,
-                Left = Left + Width / 2.5,
-                Top = Top + Height / 2.5,
-            };
+            var window = new PleaseWait() { Owner = this };
             window.Show();
             bool status = await res;
             if (status) {

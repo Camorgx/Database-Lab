@@ -92,9 +92,9 @@ namespace Lab3 {
             using var reader = await command.ExecuteReaderAsync();
             Global.teacher.ID = teacherID;
             await reader.ReadAsync();
-            Global.teacher.Name = reader.GetString("name");
-            Global.teacher.Title = reader.GetInt32("title");
-            Global.teacher.Gender = reader.GetInt32("gender");
+            Global.teacher.Name = reader.GetValue("name") as string ?? "";
+            Global.teacher.Title = reader.GetValue("title") as int? ?? 0;
+            Global.teacher.Gender = reader.GetValue("gender") as int? ?? 0;
             return true;
         }
 
