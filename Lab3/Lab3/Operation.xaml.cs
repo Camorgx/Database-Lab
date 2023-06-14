@@ -65,8 +65,8 @@ namespace Lab3 {
         private void InitMyInfo() {
             teacherID.Text = Global.teacher.ID;
             name.Text = Global.teacher.Name;
-            gender.SelectedIndex = Global.teacher.Gender - 1;
-            teacherTitle.SelectedIndex = Global.teacher.Title - 1;
+            gender.SelectedIndex = Global.teacher.Gender;
+            teacherTitle.SelectedIndex = Global.teacher.Title;
         }
 
         private void InitPaper() {

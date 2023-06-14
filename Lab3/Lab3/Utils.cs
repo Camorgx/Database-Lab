@@ -204,9 +204,11 @@ namespace Lab3 {
             builder.AppendLine("## 教学情况");
             foreach (var item in Global.totalLesson) builder.AppendLine(item.ToString() + '\n');
             builder.AppendLine("## 发表论文情况");
-            foreach (var item in Global.totalPaper) builder.AppendLine(item.ToString() + '\n');
+            for (int i = 1; i <= Global.totalPaper.Count; ++i)
+                builder.AppendLine($"{i}. {Global.totalPaper[i - 1].ToString()}\n");
             builder.AppendLine("## 承担项目情况");
-            foreach (var item in Global.totalProject) builder.AppendLine(item.ToString() + '\n');
+            for (int i = 1; i <= Global.totalProject.Count; ++i)
+                builder.AppendLine($"{i}. {Global.totalProject[i - 1].ToString()}\n");
             return builder.ToString();
         }
     }
