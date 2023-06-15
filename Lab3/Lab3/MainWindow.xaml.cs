@@ -77,6 +77,10 @@ namespace Lab3 {
             var id = teacherID.Text;
             var pwd = password.Password;
             var res = Database.TryLogin(id, pwd);
+            if (pwd.Length == 0) {
+                await Utils.MessageTips("请输入密码。", "MainWindowDialog");
+                return;
+            }
             var window = new PleaseWait() { Owner = this };
             window.Show();
             bool status = await res;
