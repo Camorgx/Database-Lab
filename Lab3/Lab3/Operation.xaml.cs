@@ -557,13 +557,20 @@ namespace Lab3 {
             using (var outputFile = new StreamWriter(mdPath)) {
                 await outputFile.WriteAsync(mdString);
             }
+            bool status = true;
             if (filePath.EndsWith(".pdf")) {
-                var doc = new Document(mdPath);
-                doc.Save(filePath);
-                File.Delete(mdPath);
+                await Task.Run(() => {
+                    var doc = new Document(mdPath);
+                    try { doc.Save(filePath); }
+                    catch (IOException) { status = false; }
+                    finally { File.Delete(mdPath); }
+                });
             }
             window.Close();
-            await Utils.MessageTips("导出成功。", dialogIdentifier);
+            if (status)
+                await Utils.MessageTips("导出成功。", dialogIdentifier);
+            else
+                await Utils.MessageTips("指定的文件不可用（请检查该文件是否正在使用中？）。", dialogIdentifier);
             Activate();
         }
     }
