@@ -35,7 +35,7 @@ for i in range(1, 21):
         hour = random.randint(1, 10)
         teach.append("('%05d', '%s', %d, %d, %d)" % (teacher, lessonID, year, term, hour))
         totalHour += hour
-    lesson.append("('%s', '%s', %d, %d)" % (lessonID, lessonName, totalHour, random.randint(1, 4)))
+    lesson.append("('%s', '%s', %d, %d)" % (lessonID, lessonName, totalHour, random.randint(1, 2)))
 
     paperID = i
     paperCandidate = random.randint(1, 5)

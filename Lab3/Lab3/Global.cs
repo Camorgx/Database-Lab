@@ -107,5 +107,24 @@ namespace Lab3 {
         public static List<Lesson> totalLesson = new();
         public static List<Paper> totalPaper = new();
         public static List<Project> totalProject = new();
+
+        public static void Init() {
+            teacher = new();
+            userPaper.Clear();
+            userProject.Clear();
+            userLesson.Clear();
+            ownPaper.Clear();
+            partedPaper.Clear();
+            ownProject.Clear();
+            partedProject.Clear();
+
+            newPaper = new();
+            newProject = new();
+            newLesson = new();
+
+            totalLesson.Clear();
+            totalPaper.Clear();
+            totalProject.Clear();
+    }
     }
 }

@@ -6,13 +6,6 @@
             "女",  // 2
         };
 
-        public static readonly string[] StudentType = {
-            "",
-            "本科生",      // 1
-            "硕士研究生",  // 2
-            "博士研究生",  // 3
-        };
-
         public static readonly string[] TeacherType = {
             "",
             "博士后",       // 1
@@ -69,10 +62,8 @@
 
         public static readonly string[] LessonType = {
             "",
-            "必修",      // 1
-            "一般通识",  // 2
-            "核心通识",  // 3
-            "选修",  // 4
+            "本科生课程",      // 1
+            "研究生课程",  // 2
         };
     }
 }

@@ -52,10 +52,8 @@
                           materialDesign:HintAssist.Hint="课程性质"
                           Style="{StaticResource MaterialDesignFloatingHintComboBox}">
                         <ComboBoxItem Content="请选择" />
-                        <ComboBoxItem Content="必修" />
-                        <ComboBoxItem Content="一般通识" />
-                        <ComboBoxItem Content="核心通识" />
-                        <ComboBoxItem Content="选修" />
+                        <ComboBoxItem Content="本科生课程" />
+                        <ComboBoxItem Content="研究生课程" />
                     </ComboBox>
                 </StackPanel>
             </StackPanel>

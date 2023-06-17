@@ -31,6 +31,7 @@ namespace Lab3 {
 
         private void LogoutButtonClick(object sender, RoutedEventArgs e) {
             logOut = true;
+            Global.Init();
             Owner.Show();
             Close();
         }
@@ -73,16 +74,21 @@ namespace Lab3 {
             Utils.UpdatePaperView();
             ownPaper.ItemsSource = Global.ownPaper;
             partedPaper.ItemsSource = Global.partedPaper;
+            ownPaper.Items.Refresh();
+            partedPaper.Items.Refresh();
         }
 
         private void InitProject() {
             Utils.UpdateProjectView();
             ownProject.ItemsSource = Global.ownProject;
             partedProject.ItemsSource = Global.partedProject;
+            ownProject.Items.Refresh();
+            partedProject.Items.Refresh();
         }
 
         private void InitLesson() {
             userLesson.ItemsSource = Global.userLesson;
+            userLesson.Items.Refresh();
         }
 
         private void InitSearch() {
@@ -96,6 +102,9 @@ namespace Lab3 {
             totalLesson.ItemsSource = Global.totalLesson;
             totalPaper.ItemsSource = Global.totalPaper;
             totalProject.ItemsSource = Global.totalProject;
+            totalLesson.Items.Refresh();
+            totalPaper.Items.Refresh();
+            totalProject.Items.Refresh();
         }
 
         private void WindowLoaded(object sender, RoutedEventArgs e) {
