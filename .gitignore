@@ -5,6 +5,7 @@
 
 .vscode/
 .idea/
+*.cdb
 
 # User-specific files
 *.rsuser
