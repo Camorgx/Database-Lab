@@ -657,9 +657,9 @@ namespace Lab3 {
             while (await reader.ReadAsync()) {
                 res.Add(new Teacher {
                     ID = reader.GetString(0),
-                    Name = reader.GetString(1),
-                    Gender = reader.GetInt32(2),
-                    Title = reader.GetInt32(3),
+                    Name = reader.GetValue(1) as string ?? "",
+                    Gender = reader.GetValue(2) as int? ?? 0,
+                    Title = reader.GetValue(3) as int? ?? 0,
                 });
             }
             return res;
